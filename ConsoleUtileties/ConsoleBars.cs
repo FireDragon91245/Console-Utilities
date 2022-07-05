@@ -14,65 +14,159 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
         public static void ProgressBar (int line, int val, int max)
         {
             ProgressBar(line, val, max, "", BarArangement.BarAndPercentageUnder, BarLook.Default);
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
         public static void ProgressBar (int line, float val, float max)
         {
             ProgressBar(line, val, max, "", BarArangement.BarAndPercentageUnder, BarLook.Default);
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
         public static void ProgressBar (int line, double val, double max)
         {
             ProgressBar(line, val, max, "", BarArangement.BarAndPercentageUnder, BarLook.Default);
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
         public static void ProgressBar (int line, decimal val, decimal max)
         {
             ProgressBar(line, val, max, "", BarArangement.BarAndPercentageUnder, BarLook.Default);
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
         public static void ProgressBar (int line, int val, int max, string title)
         {
             ProgressBar(line, val, max, title, BarArangement.BarWithTitleAndPercentageUnder, BarLook.Default);
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
         public static void ProgressBar (int line, float val, float max, string title)
         {
             ProgressBar(line, val, max, title, BarArangement.BarWithTitleAndPercentageUnder, BarLook.Default);
         }
+
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
         public static void ProgressBar (int line, double val, double max, string title)
         {
             ProgressBar(line, val, max, title, BarArangement.BarWithTitleAndPercentageUnder, BarLook.Default);
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
         public static void ProgressBar (int line, decimal val, decimal max, string title)
         {
             ProgressBar(line, val, max, title, BarArangement.BarWithTitleAndPercentageUnder, BarLook.Default);
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
+        /// <param name="style">how the progressBar is aranged and what components it countains</param>
         public static void ProgressBar (int line, int val, int max, string title, BarArangement style)
         {
             ProgressBar(line, val, max, title, style, BarLook.Default);
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
+        /// <param name="style">how the progressBar is aranged and what components it countains</param>
         public static void ProgressBar (int line, float val, float max, string title, BarArangement style)
         {
             ProgressBar(line, val, max, title, style, BarLook.Default);
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
+        /// <param name="style">how the progressBar is aranged and what components it countains</param>
         public static void ProgressBar (int line, double val, double max, string title, BarArangement style)
         {
             ProgressBar(line, val, max, title, style, BarLook.Default);
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
+        /// <param name="style">how the progressBar is aranged and what components it countains</param>
         public static void ProgressBar (int line, decimal val, decimal max, string title, BarArangement style)
         {
             ProgressBar(line, val, max, title, style, BarLook.Default);
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
+        /// <param name="arangement">how the progressBar is aranged and what components it countains</param>
+        /// <param name="style">How the ProgresBar Looks</param>
         public static void ProgressBar (int line, int val, int max, string title, BarArangement arangement, BarLook style)
         {
 
@@ -174,6 +268,15 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
+        /// <param name="arangement">how the progressBar is aranged and what components it countains</param>
+        /// <param name="style">How the ProgresBar Looks</param>
         public static void ProgressBar (int line, float val, float max, string title, BarArangement arangement, BarLook style)
         {
 
@@ -275,6 +378,15 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
+        /// <param name="arangement">how the progressBar is aranged and what components it countains</param>
+        /// <param name="style">How the ProgresBar Looks</param>
         public static void ProgressBar (int line, double val, double max, string title, BarArangement arangement, BarLook style)
         {
 
@@ -376,6 +488,15 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
+        /// <param name="arangement">how the progressBar is aranged and what components it countains</param>
+        /// <param name="style">How the ProgresBar Looks</param>
         public static void ProgressBar (int line, decimal val, decimal max, string title, BarArangement arangement, BarLook style)
         {
 
@@ -477,6 +598,13 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
         public static void ProgressBar (int line, int val, int max, bool restorePos = false)
         {
             if (restorePos)
@@ -491,6 +619,13 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
         public static void ProgressBar (int line, float val, float max, bool restorePos = false)
         {
             if (restorePos)
@@ -505,6 +640,13 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
         public static void ProgressBar (int line, double val, double max, bool restorePos = false)
         {
             if (restorePos)
@@ -519,6 +661,13 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
         public static void ProgressBar (int line, decimal val, decimal max, bool restorePos = false)
         {
             if (restorePos)
@@ -533,6 +682,14 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
+        /// <param name="title">How the progressBar is named</param>
         public static void ProgressBar (int line, int val, int max, string title, bool restorePos = false)
         {
             if (restorePos)
@@ -547,6 +704,14 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
+        /// <param name="title">How the progressBar is named</param>
         public static void ProgressBar (int line, float val, float max, string title, bool restorePos = false)
         {
             if (restorePos)
@@ -561,6 +726,14 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
+        /// <param name="title">How the progressBar is named</param>
         public static void ProgressBar (int line, double val, double max, string title, bool restorePos = false)
         {
             if (restorePos)
@@ -575,6 +748,14 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
+        /// <param name="title">How the progressBar is named</param>
         public static void ProgressBar (int line, decimal val, decimal max, string title, bool restorePos = false)
         {
             if (restorePos)
@@ -589,6 +770,15 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
+        /// <param name="title">How the progressBar is named</param>
+        /// <param name="style">how the Progress bar is aranged and what components it countains</param>
         public static void ProgressBar (int line, int val, int max, string title, BarArangement style, bool restorePos = false)
         {
             if (restorePos)
@@ -603,6 +793,15 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
+        /// <param name="title">How the progressBar is named</param>
+        /// <param name="style">how the Progress bar is aranged and what components it countains</param>
         public static void ProgressBar (int line, float val, float max, string title, BarArangement style, bool restorePos = false)
         {
             if (restorePos)
@@ -617,6 +816,15 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
+        /// <param name="title">How the progressBar is named</param>
+        /// <param name="style">how the Progress bar is aranged and what components it countains</param>
         public static void ProgressBar (int line, double val, double max, string title, BarArangement style, bool restorePos = false)
         {
             if (restorePos)
@@ -631,6 +839,15 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
+        /// <param name="title">How the progressBar is named</param>
+        /// <param name="style">how the Progress bar is aranged and what components it countains</param>
         public static void ProgressBar (int line, decimal val, decimal max, string title, BarArangement style, bool restorePos = false)
         {
             if (restorePos)
@@ -645,6 +862,16 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
+        /// <param name="title">How the progressBar is named</param>
+        /// <param name="arangement">how the Progress bar is aranged and what components it countains</param>
+        /// <param name="style">how the progressBar looks</param>
         public static void ProgressBar (int line, int val, int max, string title, BarArangement arangement, BarLook style, bool restorePos = false)
         {
             if (restorePos)
@@ -659,6 +886,16 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
+        /// <param name="title">How the progressBar is named</param>
+        /// <param name="arangement">how the Progress bar is aranged and what components it countains</param>
+        /// <param name="style">how the progressBar looks</param>
         public static void ProgressBar (int line, float val, float max, string title, BarArangement arangement, BarLook style, bool restorePos = false)
         {
             if (restorePos)
@@ -673,6 +910,16 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
+        /// <param name="title">How the progressBar is named</param>
+        /// <param name="arangement">how the Progress bar is aranged and what components it countains</param>
+        /// <param name="style">how the progressBar looks</param>
         public static void ProgressBar (int line, double val, double max, string title, BarArangement arangement, BarLook style, bool restorePos = false)
         {
             if (restorePos)
@@ -687,6 +934,16 @@ namespace ConsoleUtilities
             }
         }
 
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="restorePos">if coursor pos should be restored after progress bar print</param>
+        /// <param name="title">How the progressBar is named</param>
+        /// <param name="arangement">how the Progress bar is aranged and what components it countains</param>
+        /// <param name="style">how the progressBar looks</param>
         public static void ProgressBar (int line, decimal val, decimal max, string title, BarArangement arangement, BarLook style, bool restorePos = false)
         {
             if (restorePos)
