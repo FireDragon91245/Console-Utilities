@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ConsoleExtension
+namespace ConsoleUtilities
 {
+    /// <summary>
+    /// A class for printing Lists
+    /// </summary>
     public static class ConsoleLists
     {
         private static int ConsoleWidth
@@ -16,6 +16,14 @@ namespace ConsoleExtension
             }
         }
 
+        /// <summary>
+        /// Print a List With 1. Colum being the "What it is" and the second the value
+        /// if the string gets loger then the console it automaticly gets formatet at the last space
+        /// </summary>
+        /// <typeparam name="TKey">Type 1</typeparam>
+        /// <typeparam name="TValue">Type 2</typeparam>
+        /// <param name="line">The console line the list is startet printing</param>
+        /// <param name="list">The list</param>
         public static void PrintList<TKey, TValue> (int line, Dictionary<TKey, TValue> list)
         {
             int longestKey = 0;

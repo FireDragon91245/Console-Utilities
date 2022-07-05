@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConsoleExtension
+namespace ConsoleUtilities
 {
 
     public static class ConsoleBars

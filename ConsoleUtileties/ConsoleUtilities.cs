@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 
-namespace ConsoleExtension
+namespace ConsoleUtilities
 {
 
     public static class ConsoleUtilities
@@ -14,6 +12,9 @@ namespace ConsoleExtension
             set;
         } = GetSpaces(ConsoleWidth);
 
+        /// <summary>
+        /// A Console line of Spaces
+        /// </summary>
         public static string EmptyLine
         {
             get
@@ -47,6 +48,12 @@ namespace ConsoleExtension
             }
         }
 
+        [Obsolete("Use ReplaceLine(int, string) instead if you can becourse invoking methods is slow!")]
+        /// <summary>
+        /// Replace a Line with a String
+        /// </summary>
+        /// <param name="line">The line replaced</param>
+        /// <param name="p">Function that results the String</param>
         public static void ReplaceLine (int line, Func<string> p)
         {
             ReplaceLine(line, p.Invoke());
@@ -65,18 +72,30 @@ namespace ConsoleExtension
         } = Console.GetCursorPosition();
 
         //Save the curent coursor Pos
+        /// <summary>
+        /// Save the current CursorPos, like PushMatrix
+        /// </summary>
         public static void SavePos ()
         {
             OldCoursorPos = Console.GetCursorPosition();
         }
 
         //Resor the previous sved coursor Pos
+        /// <summary>
+        /// Load the Saved Cursor Pos and Setting it in the Console, like PopMatrix
+        /// </summary>
         public static void LoadPos ()
         {
             Console.SetCursorPosition(OldCoursorPos.Left, OldCoursorPos.Top);
         }
 
         //return the inputet number of the provided charackter
+        /// <summary>
+        /// Get character x times
+        /// </summary>
+        /// <param name="num">how often you want the character</param>
+        /// <param name="charakter">what character</param>
+        /// <returns>streing of <paramref name="num"/> * <paramref name="charakter"/></returns>
         public static string GetCharakters (int num, char charakter)
         {
             StringBuilder sb = new();
@@ -88,12 +107,21 @@ namespace ConsoleExtension
         }
 
         //return the inputet number of spaces
+        /// <summary>
+        /// get x Spaces
+        /// </summary>
+        /// <param name="num">how many spaces</param>
+        /// <returns>string of <paramref name="num"/> * ' '</returns>
         public static string GetSpaces (int num)
         {
             return GetCharakters(num, ' ');
         }
 
         //Clear a line by replacing everything with spaces
+        /// <summary>
+        /// Clear the line
+        /// </summary>
+        /// <param name="line">the line to clear</param>
         public static void ClearLine (int line)
         {
             Console.SetCursorPosition(0, line);
@@ -101,6 +129,23 @@ namespace ConsoleExtension
         }
 
         //Stop line index to course overflow by subtraction and replacing with empty lines
+        /// <summary>
+        /// ATENTION: this is a dangerous method if you dont know how to use it,
+        /// it can overwrite you conole text that was already written or can just start a new page so everything vanishes
+        /// USAGE:
+        ///     When your console is nearly full, it is about to reach the maximun BufferHeight <see cref="Console.BufferHeight"/> and
+        ///     you want to print something at a line index out of range of the buffer size it will obious throw a error so this methods resets the line index
+        ///     by seting the line index back to 0 but writing one ConsoleHeight <see cref="Console.WindowHeight"/> of empty lines,
+        ///     This will akt like a new console begining so you can incese the index again, normaly this is automatic by the console with Console.WriteLine() but becourse my 
+        ///     print Table and List Methods are relient on indexes i need to do so manualy
+        ///     
+        ///     Usecase: you reli on indexes like so 
+        ///     index++;
+        ///     int currline = Console.GetCursorPos().Top + index;
+        ///     currline = NormalizeLineIndex(currline);
+        /// </summary>
+        /// <param name="line">line index to normalize</param>
+        /// <returns>new line index</returns>
         public static int NormalizeLineIndex (int line)
         {
             if (line > Console.BufferHeight - 50)
@@ -114,6 +159,11 @@ namespace ConsoleExtension
             return line;
         }
 
+        /// <summary>
+        /// Clear line
+        /// </summary>
+        /// <param name="line">the line to clear</param>
+        /// <param name="resorePos">Save Coursor Pos before Clearing and Restoring Cursot Pos after clearing if true</param>
         public static void ClearLine (int line, bool resorePos = false)
         {
             if (resorePos)
@@ -130,6 +180,11 @@ namespace ConsoleExtension
         }
 
         //clear old line and replace with new one
+        /// <summary>
+        /// Replace a line with a string
+        /// </summary>
+        /// <param name="line">the line to replace</param>
+        /// <param name="replaceWith">the string the line is replaced with</param>
         public static void ReplaceLine (int line, string replaceWith)
         {
             ClearLine(line);
@@ -138,6 +193,12 @@ namespace ConsoleExtension
         }
 
         //clear old line and replace with new one
+        /// <summary>
+        /// Replace a line with a string
+        /// </summary>
+        /// <param name="line">the line to replace</param>
+        /// <param name="replaceWith">the string the line is replaced with</param>
+        /// <param name="restorePos">if true Custor Pos gests restored to before the ReplaceLine</param>
         public static void ReplaceLine (int line, string replaceWith, bool restorePos = false)
         {
             if (restorePos)
@@ -155,6 +216,13 @@ namespace ConsoleExtension
         }
 
         //clear old line and replace with new one can be centered
+        /// <summary>
+        ///  Replace a line with a string
+        /// </summary>
+        /// <param name="line">the line to replace</param>
+        /// <param name="replaceWith">the string the line is replaced with</param>
+        /// <param name="center">if true the string gets centered in the midle pf the console line</param>
+        /// <param name="restorePos">if true the cursor pos gets restored to where it was before the replace</param>
         public static void ReplaceLine (int line, string replaceWith, bool center = false, bool restorePos = false)
         {
             if (restorePos)
@@ -184,6 +252,12 @@ namespace ConsoleExtension
         }
 
         //Write the text in the line but keep text written before
+        /// <summary>
+        ///  Same as replace Line but it wont Cleat the entire line but only overwrite the part how long the string is
+        /// </summary>
+        /// <param name="line">the line to overwrite</param>
+        /// <param name="startPos">starting pos of overwrite</param>
+        /// <param name="overwriteWith">the string to overwrite with</param>
         public static void OverwriteLine (int line, int startPos, string overwriteWith)
         {
             Console.SetCursorPosition(startPos, line);
@@ -191,6 +265,13 @@ namespace ConsoleExtension
         }
 
         //Write the text in the line but keep text written before
+        /// <summary>
+        ///  Same as replace Line but it wont Cleat the entire line but only overwrite the part how long the string is
+        /// </summary>
+        /// <param name="line">the line to overwrite</param>
+        /// <param name="startPos">starting pos of overwrite</param>
+        /// <param name="overwriteWith">the string to overwrite with</param>
+        /// <param name="restorePos">if true the cursor pos gets restored to where it was before the replace</param>
         public static void OverwriteLine (int line, int startPos, string overwriteWith, bool restorePos = false)
         {
             if (restorePos)
@@ -207,6 +288,12 @@ namespace ConsoleExtension
         }
 
         //Write the text (Centered) in the line but keep text written before
+        /// <summary>
+        ///  Same as replace Line but it wont Cleat the entire line but only overwrite the part how long the string is
+        /// </summary>
+        /// <param name="line">the line to overwrite</param>
+        /// <param name="overwriteWith">the string to overwrite with</param>
+        /// <param name="center">if true the string gets automaticly centered</param>
         public static void OverwriteLine (int line, string overwriteWith, bool center = false)
         {
             if (center)
@@ -220,6 +307,13 @@ namespace ConsoleExtension
         }
 
         //Write the text (Centered) in the line but keep text written before
+        /// <summary>
+        ///  Same as replace Line but it wont Cleat the entire line but only overwrite the part how long the string is
+        /// </summary>
+        /// <param name="line">the line to overwrite</param>
+        /// <param name="overwriteWith">the string to overwrite with</param>
+        /// <param name="restorePos">if true the cursor pos gets restored to where it was before the replace</param>
+        /// <param name="center">if true the string gets automaticly centered</param>
         public static void OverwriteLine (int line, string overwriteWith, bool center = false, bool restorePos = false)
         {
             if (restorePos)
@@ -249,12 +343,22 @@ namespace ConsoleExtension
         }
 
         //return an int with the starting posiotion of a string so when writen at this pos in console its centered
+        /// <summary>
+        /// Dosnt Get The center index of string wherter the index where the string needs to be startet writing on a console line so its centered
+        /// </summary>
+        /// <param name="s">the string calculatet with</param>
+        /// <returns>int index to start writing at</returns>
         public static int GetCenterOfString (string s)
         {
             return (int) Math.Round(( ConsoleWidth - s.Length ) / 2d);
         }
 
         //Return a string that is Paded with spaces so its in the midle of the console wehen written on a new line
+        /// <summary>
+        /// This encases the string in spaces so if written at begining of a line its centered
+        /// </summary>
+        /// <param name="s">the string to center</param>
+        /// <returns>a string encased in spaces so centered in a console line</returns>
         public static string CenterString (string s)
         {
             int spaces = (int) Math.Round(( ConsoleWidth - s.Length ) / 2d);
@@ -262,6 +366,12 @@ namespace ConsoleExtension
         }
 
         //fomat a array to human readable format
+        /// <summary>
+        /// A external ToStrung() Method for arrays so it acualy looks like a array
+        /// </summary>
+        /// <typeparam name="T">Type of array</typeparam>
+        /// <param name="array">the array to convert</param>
+        /// <returns>a string with a nicly formatet array</returns>
         public static string FormatArray<T> (T[] array)
         {
             if (array is null)
