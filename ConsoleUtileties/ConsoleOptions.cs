@@ -16,7 +16,7 @@ namespace ConsoleExtension
         private const int SC_MAXIMIZE = 0xF030;
         private const int SC_CLOSE = 0xF060;
 
-        private static List<int> DisabledAdresses = new();
+        private static readonly List<int> DisabledAdresses = new();
 
         public static void EnableAll ()
         {
