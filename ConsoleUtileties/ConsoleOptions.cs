@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
-namespace ConsoleExtension
+namespace ConsoleUtilities
 {
+    /// <summary>
+    /// Class to customize The Console like Disabling the red X
+    /// </summary>
     public static class ConsoleOptions
     {
         private const int MF_BYCOMMAND = 0x00000000;
@@ -18,12 +17,19 @@ namespace ConsoleExtension
 
         private static readonly List<int> DisabledAdresses = new();
 
+        /// <summary>
+        /// Resets all modifikations on the console
+        /// </summary>
         public static void EnableAll ()
         {
             DisabledAdresses.Clear();
             ResetWindowMenu();
         }
 
+        /// <summary>
+        /// Disables everything:
+        /// Resizing, Red X, Minimize, Maximize
+        /// </summary>
         public static void DisableAll ()
         {
             DisableConsoleResize(true);
@@ -32,6 +38,10 @@ namespace ConsoleExtension
             DisableConsoleClose(true);
         }
 
+        /// <summary>
+        /// Disables or Enables The Resizabliety of The Console
+        /// </summary>
+        /// <param name="setTo">if true Disabled if false Enabled</param>
         public static void DisableConsoleResize (bool setTo = false)
         {
             if (setTo)
@@ -44,6 +54,10 @@ namespace ConsoleExtension
             }
         }
 
+        /// <summary>
+        /// Disables the Minimize button on the Console
+        /// </summary>
+        /// <param name="setTo">if true Disabled if false Enabled</param>
         public static void DisableConsoleMinimize (bool setTo = false)
         {
             if (setTo)
@@ -56,6 +70,10 @@ namespace ConsoleExtension
             }
         }
 
+        /// <summary>
+        /// Disables the Maximize button an the Console
+        /// </summary>
+        /// <param name="setTo">if true Disabled if false Enabled</param>
         public static void DisableConsoleMaximize (bool setTo = false)
         {
             if (setTo)
@@ -68,6 +86,10 @@ namespace ConsoleExtension
             }
         }
 
+        /// <summary>
+        /// Disables The Close button (Red X) on the console
+        /// </summary>
+        /// <param name="setTo">if true Disabled if false Enabled</param>
         public static void DisableConsoleClose (bool setTo = false)
         {
             if (setTo)

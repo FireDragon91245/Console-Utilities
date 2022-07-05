@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace ConsoleExtension
+namespace ConsoleUtilities
 {
+    /// <summary>
+    /// A class for printing Folders and Files to the Console
+    /// </summary>
     public static class ConsoleIO
     {
         private static readonly IOColums[] DefaultColums = { IOColums.Name, IOColums.Extension, IOColums.Size };
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="path">The Folder Path</param>
         public static void PrintFolder (int line, string path)
         {
             if (!Directory.Exists(path))
@@ -24,12 +29,23 @@ namespace ConsoleExtension
             PrintFolder(line, new DirectoryInfo(path));
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="dir"></param>
         public static void PrintFolder (int line, DirectoryInfo dir)
         {
             ConsoleUtilities.ReplaceLine(line, $"Showing content of Directory \"{dir.FullName}\"");
             ConsoleTables.PrintTable(line + 1, Conversions.DataTableSizeFormat(Conversions.DirectoryAsTable(dir)), TableLook.DoubleLines, true);
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="path">Folder Path</param>
+        /// <param name="sort">What colum is sortet after</param>
         public static void PrintFolder (int line, string path, IOSorting sort)
         {
             if (!Directory.Exists(path))
@@ -41,6 +57,12 @@ namespace ConsoleExtension
             PrintFolder(line, new DirectoryInfo(path), sort);
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="dir">The FolderInfo</param>
+        /// <param name="sort">What colum is sortet after</param>
         public static void PrintFolder (int line, DirectoryInfo dir, IOSorting sort)
         {
             ConsoleUtilities.ReplaceLine(line, $"Showing content of Directory \"{dir.FullName}\"");
@@ -56,6 +78,13 @@ namespace ConsoleExtension
             }
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="path">The Folder Path</param>
+        /// <param name="sort">What colum is sortet after</param>
+        /// <param name="look">How the printet List looks</param>
         public static void PrintFolder (int line, string path, IOSorting sort, TableLook look)
         {
             if (!Directory.Exists(path))
@@ -67,6 +96,13 @@ namespace ConsoleExtension
             PrintFolder(line, new DirectoryInfo(path), sort, look);
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="dir">The FolderInfo</param>
+        /// <param name="sort">What colum is sortet after</param>
+        /// <param name="look">How the printet List looks</param>
         public static void PrintFolder (int line, DirectoryInfo dir, IOSorting sort, TableLook look)
         {
             ConsoleUtilities.ReplaceLine(line, $"Showing content of Directory \"{dir.FullName}\"");
@@ -82,6 +118,14 @@ namespace ConsoleExtension
             }
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="dir">The FolderInfo</param>
+        /// <param name="sort">What colum is sortet after</param>
+        /// <param name="look">How the printet List looks</param>
+        /// <param name="colums">What IOColums are countained in the list</param>
         public static void PrintFolder (int line, DirectoryInfo dir, IOSorting sort, TableLook look, IOColums[] colums)
         {
             ConsoleUtilities.ReplaceLine(line, $"Showing content of Directory \"{dir.FullName}\"");
@@ -97,6 +141,14 @@ namespace ConsoleExtension
             }
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="path">The Folder Path</param>
+        /// <param name="sort">What colum is sortet after</param>
+        /// <param name="look">How the printet List looks</param>
+        /// <param name="colums">What IOColums are countained in the list</param>
         public static void PrintFolder (int line, string path, IOSorting sort, TableLook look, IOColums[] colums)
         {
             if (!Directory.Exists(path))
@@ -108,36 +160,79 @@ namespace ConsoleExtension
             PrintFolder(line, new DirectoryInfo(path), sort, look, colums);
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="path">The Folder Path</param>
+        /// <param name="sort">What colum is sortet after</param>
+        /// <param name="colums">What IOColums are countained in the list</param>
         public static void PrintFolder (int line, string path, IOSorting sort, IOColums[] colums)
         {
             PrintFolder(line, path, sort, TableLook.DoubleLines, colums);
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="dir">The FolderInfo</param>
+        /// <param name="sort">What colum is sortet after</param>
+        /// <param name="colums">What IOColums are countained in the list</param>
         public static void PrintFolder (int line, DirectoryInfo dir, IOSorting sort, IOColums[] colums)
         {
             PrintFolder(line, dir, sort, TableLook.DoubleLines, colums);
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="path">The Folder Path</param>
+        /// <param name="colums">What IOColums are countained in the list</param>
         public static void PrintFolder (int line, string path, IOColums[] colums)
         {
             PrintFolder(line, path, IOSorting.NoSorting, TableLook.DoubleLines, colums);
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="colums">What IOColums are countained in the list</param>
         public static void PrintFolder (int line, DirectoryInfo dir, IOColums[] colums)
         {
             PrintFolder(line, dir, IOSorting.NoSorting, TableLook.DoubleLines, colums);
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="path">The Folder Path</param>
+        /// <param name="look">How the printet List looks</param>
+        /// <param name="colums">What IOColums are countained in the list</param>
         public static void PrintFolder (int line, string path, TableLook look, IOColums[] colums)
         {
             PrintFolder(line, path, IOSorting.NoSorting, look, colums);
         }
 
+        /// <summary>
+        /// Print The Folders Contetns
+        /// </summary>
+        /// <param name="line">The console line to start printing at</param>
+        /// <param name="dir">The FolderInfi</param>
+        /// <param name="look">How the printet List looks</param>
+        /// <param name="colums">What IOColums are countained in the list</param>
         public static void PrintFolder (int line, DirectoryInfo dir, TableLook look, IOColums[] colums)
         {
             PrintFolder(line, dir, IOSorting.NoSorting, look, colums);
         }
 
+        /// <summary>
+        /// Some private Methods for PrintFolder Methods but some public ones if Needed for som reason
+        /// (Can be unsafe as the methods are made for PrintFolder Methods)
+        /// </summary>
         public static class Conversions
         {
             internal static string GetSortKey (IOSorting sort)
@@ -179,6 +274,13 @@ namespace ConsoleExtension
                 };
             }
 
+            /// <summary>
+            /// Gets a table with all IOColums and files form the Folder
+            /// </summary>
+            /// <param name="dir">The FolderInfo</param>
+            /// <param name="colums">The Colums countained in the table</param>
+            /// <returns>DataTable with all files and folder from the folder with the info from the specefid IOColumns</returns>
+            /// <exception cref="ArgumentOutOfRangeException">Should be imposible ust a defoult in a swich</exception>
             public static DataTable DirectoryAsTable (DirectoryInfo dir, IOColums[] colums)
             {
                 DataTable table = new();
@@ -268,6 +370,11 @@ namespace ConsoleExtension
                 return table;
             }
 
+            /// <summary>
+            /// Gets a table with all IOColums and files form the Folder
+            /// </summary>
+            /// <param name="dir">The DirectoryInfo</param>
+            /// <returns>DataTable with files and folders from the Folder with default IOColumns</returns>
             public static DataTable DirectoryAsTable (DirectoryInfo dir)
             {
                 DataTable dt = new();

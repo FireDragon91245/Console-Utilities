@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Reflection;
 
-namespace ConsoleExtension
+namespace ConsoleUtilities
 {
 
     public class Program
