@@ -230,6 +230,144 @@ namespace ConsoleUtilities
         }
 
         /// <summary>
+        /// Print details about a file in a list form <see cref="ConsoleLists"/>
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="path">file path</param>
+        public static void PrintFile (int line, string path)
+        {
+            PrintFile(line, new FileInfo(path), new FileCategorys[] { FileCategorys.Name, FileCategorys.Extension, FileCategorys.Size, FileCategorys.FullPath }, TableLook.Default);
+        }
+
+        /// <summary>
+        /// Print details about a file in a list form <see cref="ConsoleLists"/>
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="path">file path</param>
+        /// <param name="categorys">categorys that detirmin what is in the list and in what order</param>
+        public static void PrintFile (int line, string path, FileCategorys[] categorys)
+        {
+            PrintFile(line, new FileInfo(path), categorys, TableLook.Default);
+        }
+
+        /// <summary>
+        /// Print details about a file in a list form <see cref="ConsoleLists"/>
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="path">file path</param>
+        /// <param name="style">how the list looks</param>
+        public static void PrintFile (int line, string path, TableLook style)
+        {
+            PrintFile(line, new FileInfo(path), new FileCategorys[] {FileCategorys.Name, FileCategorys.Extension, FileCategorys.Size, FileCategorys.FullPath}, style);
+        }
+
+        /// <summary>
+        /// Print details about a file in a list form <see cref="ConsoleLists"/>
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="file">FileInfo</param>
+        public static void PrintFile (int line, FileInfo file)
+        {
+            PrintFile(line, file, new FileCategorys[] { FileCategorys.Name, FileCategorys.Extension, FileCategorys.Size, FileCategorys.FullPath }, TableLook.Default);
+        }
+
+        /// <summary>
+        /// Print details about a file in a list form <see cref="ConsoleLists"/>
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="file">FileInfo</param>
+        /// <param name="categorys">categorys that detirmin what is in the list and in what order</param>
+        public static void PrintFile (int line, FileInfo file, FileCategorys[] categorys)
+        {
+            PrintFile(line, file, categorys, TableLook.Default);
+        }
+
+        /// <summary>
+        /// Print details about a file in a list form <see cref="ConsoleLists"/>
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="file">FileInfo</param>
+        /// <param name="style">how the list looks</param>
+        public static void PrintFile (int line, FileInfo file, TableLook style)
+        {
+            PrintFile(line, file, new FileCategorys[] { FileCategorys.Name, FileCategorys.Extension, FileCategorys.Size, FileCategorys.FullPath }, style);
+        }
+
+        /// <summary>
+        /// Print details about a file in a list form <see cref="ConsoleLists"/>
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="categorys">categorys that detirmin what is in the list and in what order</param>
+        /// <param name="style">how the list looks</param>
+        public static void PrintFile (int line, string path, FileCategorys[] categorys, TableLook style)
+        {
+            PrintFile(line, new FileInfo(path), categorys, style);
+        }
+
+        /// <summary>
+        /// Print details about a file in a list form <see cref="ConsoleLists"/>
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="file">FileInfo</param>
+        /// <param name="categorys">categorys that detirmin what is in the list and in what order</param>
+        /// <param name="style">how the list looks</param>
+        public static void PrintFile (int line, FileInfo file, FileCategorys[] categorys, TableLook style)
+        {
+            if (!file.Exists || categorys.Length == 0)
+                return;
+            DataTable table = new();
+            table.Columns.Add("Category", typeof(string));
+            table.Columns.Add("Value", typeof(string));
+            foreach (FileCategorys category in categorys)
+            {
+                string cat = category switch
+                {
+                    FileCategorys.Size => "File Size:",
+                    FileCategorys.Name => "File Name:",
+                    FileCategorys.Extension => "File Extension:",
+                    FileCategorys.Atributes => "File Atributes:",
+                    FileCategorys.CreationTime => "File Creation Date:",
+                    FileCategorys.CreationTimeUtc => "File Creation Date Utc:",
+                    FileCategorys.DirectoryPath => "Directory File Path:",
+                    FileCategorys.Exists => "File Exists:",
+                    FileCategorys.FullName => "Full File Name:",
+                    FileCategorys.IsReadOnly => "Is File Readonly:",
+                    FileCategorys.LastAcessTime => "File Last Acessed:",
+                    FileCategorys.LastAcessTimeUtc => "File Last Acessed Utc:",
+                    FileCategorys.LastWrittenTime => "File Last Changed:",
+                    FileCategorys.LastWrittenTimeUtc => "File Last Changed Utc:",
+                    FileCategorys.FolderName => "File Directory Name:",
+                    FileCategorys.FullPath => "Full Path to the File:",
+                    _ => "N/A"
+                };
+                string value = category switch
+                {
+                    FileCategorys.Size => Conversions.FormatSize(file.Length),
+                    FileCategorys.Name => file.Name.Substring(0, file.Name.Length - file.Name.Split('.').Last().Length - 1),
+                    FileCategorys.Extension => '.' + file.Name.Split('.').Last(),
+                    FileCategorys.Atributes => file.Attributes.ToString(),
+                    FileCategorys.CreationTime => file.CreationTime.ToString(),
+                    FileCategorys.CreationTimeUtc => file.CreationTimeUtc.ToString(),
+                    FileCategorys.DirectoryPath => file.DirectoryName,
+                    FileCategorys.Exists => file.Exists.ToString(),
+                    FileCategorys.FullName => file.Name,
+                    FileCategorys.IsReadOnly => file.IsReadOnly.ToString(),
+                    FileCategorys.LastAcessTime => file.LastAccessTime.ToString(),
+                    FileCategorys.LastAcessTimeUtc => file.LastAccessTimeUtc.ToString(),
+                    FileCategorys.LastWrittenTime => file.LastWriteTime.ToString(),
+                    FileCategorys.LastWrittenTimeUtc => file.LastWriteTimeUtc.ToString(),
+                    FileCategorys.FolderName => file.Directory.Name,
+                    FileCategorys.FullPath => file.FullName,
+                    _ => "N/A",
+                };
+
+                table.Rows.Add(new object[] { cat, value });
+            }
+
+            ConsoleLists.PrintSmartList(line, table, style, 5, true);
+        }
+
+        /// <summary>
         /// Some private Methods for PrintFolder Methods but some public ones if Needed for som reason
         /// (Can be unsafe as the methods are made for PrintFolder Methods)
         /// </summary>
@@ -412,6 +550,17 @@ namespace ConsoleUtilities
                 return table;
             }
 
+            internal static string FormatSize (long size)
+            {
+                return size < 1000
+                            ? $"{size} bytes"
+                            : size < 1000000
+                                ? $"{Math.Round(size / 1000d, 1)} KB"
+                                : size < 1000000000
+                                    ? $"{Math.Round(size / 1000000d, 1)} MB"
+                                    : $"{Math.Round(size / 1000000000d, 1)} GB";
+            }
+
             internal static bool ValidateSorting (IOSorting sort, IOColums[] colums)
             {
                 if (sort == IOSorting.NoSorting)
@@ -482,5 +631,25 @@ namespace ConsoleUtilities
         IsReadOnly,
         LastAcessDate,
         LastAcessDateUtc
+    }
+
+    public enum FileCategorys
+    {
+        Size,
+        Name,
+        Extension,
+        Atributes,
+        CreationTime,
+        CreationTimeUtc,
+        DirectoryPath,
+        Exists,
+        FullPath,
+        FullName,
+        IsReadOnly,
+        LastAcessTime,
+        LastAcessTimeUtc,
+        LastWrittenTime,
+        LastWrittenTimeUtc,
+        FolderName
     }
 }
