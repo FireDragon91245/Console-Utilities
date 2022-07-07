@@ -41,38 +41,29 @@ namespace ConsoleUtilities
                     longest[i] = table.Columns[i].ColumnName.Length;
             }
 
-            ConsoleUtilities.ReplaceLine(line, () =>
+            StringBuilder sb1 = new(" |");
+            for (int i = 0 ; i < table.Columns.Count ; i++)
             {
-                StringBuilder sb = new(" |");
-                for (int i = 0 ; i < table.Columns.Count ; i++)
-                {
-                    sb.Append($" {table.Columns[i].ColumnName}{ConsoleUtilities.GetSpaces(longest[i] - table.Columns[i].ColumnName.Length)} |");
-                }
-                return sb.ToString();
-            });
+                sb1.Append($" {table.Columns[i].ColumnName}{ConsoleUtilities.GetSpaces(longest[i] - table.Columns[i].ColumnName.Length)} |");
+            }
+            ConsoleUtilities.ReplaceLine(line, sb1.ToString());
 
-            ConsoleUtilities.ReplaceLine(line + 1, () =>
+            StringBuilder sb2 = new(" +");
+            for (int i = 0 ; i < table.Columns.Count ; i++)
             {
-                StringBuilder sb = new(" +");
-                for (int i = 0 ; i < table.Columns.Count ; i++)
-                {
-                    sb.Append($"{ConsoleUtilities.GetCharakters(longest[i] + 2, '-')}+");
-                }
-                return sb.ToString();
-            });
+                sb2.Append($"{ConsoleUtilities.GetCharakters(longest[i] + 2, '-')}+");
+            }
+            ConsoleUtilities.ReplaceLine(line + 1, sb2.ToString());
 
             for (int i = 0 ; i < table.Rows.Count ; i++)
             {
                 line = ConsoleUtilities.NormalizeLineIndex(line + i + 2) - i - 2;
-                ConsoleUtilities.ReplaceLine(line + i + 2, () =>
+                StringBuilder sb = new(" |");
+                for (int j = 0 ; j < table.Columns.Count ; j++)
                 {
-                    StringBuilder sb = new(" |");
-                    for (int j = 0 ; j < table.Columns.Count ; j++)
-                    {
-                        sb.Append($" {table.Rows[i][table.Columns[j]]}{ConsoleUtilities.GetSpaces(longest[j] - table.Rows[i][table.Columns[j]].ToString().Length)} |");
-                    }
-                    return sb.ToString();
-                });
+                    sb.Append($" {table.Rows[i][table.Columns[j]]}{ConsoleUtilities.GetSpaces(longest[j] - table.Rows[i][table.Columns[j]].ToString().Length)} |");
+                }
+                ConsoleUtilities.ReplaceLine(line + i + 2, sb.ToString());
             }
         }
 
@@ -97,62 +88,54 @@ namespace ConsoleUtilities
                     longest[i] = table.Columns[i].ColumnName.Length;
             }
 
-            ConsoleUtilities.ReplaceLine(line, () =>
+            StringBuilder sb0 = new(" |");
+            for (int i = 0 ; i < table.Columns.Count ; i++)
             {
-                StringBuilder sb = new(" |");
-                for (int i = 0 ; i < table.Columns.Count ; i++)
+                sb0.Append($" {table.Columns[i].ColumnName}{ConsoleUtilities.GetSpaces(longest[i] - table.Columns[i].ColumnName.Length)} |");
+            }
+            if (cutTableAtLineEnd)
+            {
+                if (sb0.Length > ConsoleWidth)
                 {
-                    sb.Append($" {table.Columns[i].ColumnName}{ConsoleUtilities.GetSpaces(longest[i] - table.Columns[i].ColumnName.Length)} |");
+                    sb0.Remove(ConsoleWidth - 3, sb0.Length - ConsoleWidth + 3);
+                    sb0.Append("...");
                 }
-                if (cutTableAtLineEnd)
-                {
-                    if (sb.Length > ConsoleWidth)
-                    {
-                        sb.Remove(ConsoleWidth - 3, sb.Length - ConsoleWidth + 3);
-                        sb.Append("...");
-                    }
-                }
-                return sb.ToString();
-            });
+            }
+            ConsoleUtilities.ReplaceLine(line, sb0.ToString());
 
-            ConsoleUtilities.ReplaceLine(line + 1, () =>
+            StringBuilder sb1 = new(" +");
+            for (int i = 0 ; i < table.Columns.Count ; i++)
             {
-                StringBuilder sb = new(" +");
-                for (int i = 0 ; i < table.Columns.Count ; i++)
+                sb1.Append($"{ConsoleUtilities.GetCharakters(longest[i] + 2, '-')}+");
+            }
+            if (cutTableAtLineEnd)
+            {
+                if (sb1.Length > ConsoleWidth)
                 {
-                    sb.Append($"{ConsoleUtilities.GetCharakters(longest[i] + 2, '-')}+");
+                    sb1.Remove(ConsoleWidth - 3, sb1.Length - ConsoleWidth + 3);
+                    sb1.Append("...");
                 }
-                if (cutTableAtLineEnd)
-                {
-                    if (sb.Length > ConsoleWidth)
-                    {
-                        sb.Remove(ConsoleWidth - 3, sb.Length - ConsoleWidth + 3);
-                        sb.Append("...");
-                    }
-                }
-                return sb.ToString();
-            });
+            }
+            ConsoleUtilities.ReplaceLine(line + 1, sb1.ToString());
+
 
             for (int i = 0 ; i < table.Rows.Count ; i++)
             {
                 line = ConsoleUtilities.NormalizeLineIndex(line + i + 2) - i - 2;
-                ConsoleUtilities.ReplaceLine(line + i + 2, () =>
+                StringBuilder sb = new(" |");
+                for (int j = 0 ; j < table.Columns.Count ; j++)
                 {
-                    StringBuilder sb = new(" |");
-                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    sb.Append($" {table.Rows[i][table.Columns[j]]}{ConsoleUtilities.GetSpaces(longest[j] - table.Rows[i][table.Columns[j]].ToString().Length)} |");
+                }
+                if (cutTableAtLineEnd)
+                {
+                    if (sb.Length > ConsoleWidth)
                     {
-                        sb.Append($" {table.Rows[i][table.Columns[j]]}{ConsoleUtilities.GetSpaces(longest[j] - table.Rows[i][table.Columns[j]].ToString().Length)} |");
+                        sb.Remove(ConsoleWidth - 3, sb.Length - ConsoleWidth + 3);
+                        sb.Append("...");
                     }
-                    if (cutTableAtLineEnd)
-                    {
-                        if (sb.Length > ConsoleWidth)
-                        {
-                            sb.Remove(ConsoleWidth - 3, sb.Length - ConsoleWidth + 3);
-                            sb.Append("...");
-                        }
-                    }
-                    return sb.ToString();
-                });
+                }
+                ConsoleUtilities.ReplaceLine(line + i + 2, sb.ToString());
             }
         }
 
@@ -187,38 +170,29 @@ namespace ConsoleUtilities
                     longest[i] = table.Columns[i].ColumnName.Length;
             }
 
-            ConsoleUtilities.ReplaceLine(line, () =>
+            StringBuilder sb0 = new($" {vertikal}");
+            for (int i = 0 ; i < table.Columns.Count ; i++)
             {
-                StringBuilder sb = new($" {vertikal}");
-                for (int i = 0 ; i < table.Columns.Count ; i++)
-                {
-                    sb.Append($" {table.Columns[i].ColumnName}{ConsoleUtilities.GetSpaces(longest[i] - table.Columns[i].ColumnName.Length)} {vertikal}");
-                }
-                return sb.ToString();
-            });
+                sb0.Append($" {table.Columns[i].ColumnName}{ConsoleUtilities.GetSpaces(longest[i] - table.Columns[i].ColumnName.Length)} {vertikal}");
+            }
+            ConsoleUtilities.ReplaceLine(line, sb0.ToString());
 
-            ConsoleUtilities.ReplaceLine(line + 1, () =>
+            StringBuilder sb1 = new($" {crossing}");
+            for (int i = 0 ; i < table.Columns.Count ; i++)
             {
-                StringBuilder sb = new($" {crossing}");
-                for (int i = 0 ; i < table.Columns.Count ; i++)
-                {
-                    sb.Append($"{ConsoleUtilities.GetCharakters(longest[i] + 2, horizontal)}{crossing}");
-                }
-                return sb.ToString();
-            });
+                sb1.Append($"{ConsoleUtilities.GetCharakters(longest[i] + 2, horizontal)}{crossing}");
+            }
+            ConsoleUtilities.ReplaceLine(line + 1, sb1.ToString());
 
             for (int i = 0 ; i < table.Rows.Count ; i++)
             {
                 line = ConsoleUtilities.NormalizeLineIndex(line + i + 2) - i - 2;
-                ConsoleUtilities.ReplaceLine(line + i + 2, () =>
+                StringBuilder sb2 = new($" {vertikal}");
+                for (int j = 0 ; j < table.Columns.Count ; j++)
                 {
-                    StringBuilder sb = new($" {vertikal}");
-                    for (int j = 0 ; j < table.Columns.Count ; j++)
-                    {
-                        sb.Append($" {table.Rows[i][table.Columns[j]]}{ConsoleUtilities.GetSpaces(longest[j] - table.Rows[i][table.Columns[j]].ToString().Length)} {vertikal}");
-                    }
-                    return sb.ToString();
-                });
+                    sb2.Append($" {table.Rows[i][table.Columns[j]]}{ConsoleUtilities.GetSpaces(longest[j] - table.Rows[i][table.Columns[j]].ToString().Length)} {vertikal}");
+                }
+                ConsoleUtilities.ReplaceLine(line + i + 2, sb2.ToString());
             }
         }
 
@@ -254,62 +228,56 @@ namespace ConsoleUtilities
                     longest[i] = table.Columns[i].ColumnName.Length;
             }
 
-            ConsoleUtilities.ReplaceLine(line, () =>
-            {
-                StringBuilder sb = new($" {vertikal}");
-                for (int i = 0 ; i < table.Columns.Count ; i++)
-                {
-                    sb.Append($" {table.Columns[i].ColumnName}{ConsoleUtilities.GetSpaces(longest[i] - table.Columns[i].ColumnName.Length)} {vertikal}");
-                }
-                if (cutTableAtLineEnd)
-                {
-                    if (sb.Length > ConsoleWidth)
-                    {
-                        sb.Remove(ConsoleWidth - 3, sb.Length - ConsoleWidth + 3);
-                        sb.Append("...");
-                    }
-                }
-                return sb.ToString();
-            });
 
-            ConsoleUtilities.ReplaceLine(line + 1, () =>
+            StringBuilder sb0 = new($" {vertikal}");
+            for (int i = 0 ; i < table.Columns.Count ; i++)
             {
-                StringBuilder sb = new($" {crossing}");
-                for (int i = 0 ; i < table.Columns.Count ; i++)
+                sb0.Append($" {table.Columns[i].ColumnName}{ConsoleUtilities.GetSpaces(longest[i] - table.Columns[i].ColumnName.Length)} {vertikal}");
+            }
+            if (cutTableAtLineEnd)
+            {
+                if (sb0.Length > ConsoleWidth)
                 {
-                    sb.Append($"{ConsoleUtilities.GetCharakters(longest[i] + 2, horizontal)}{crossing}");
+                    sb0.Remove(ConsoleWidth - 3, sb0.Length - ConsoleWidth + 3);
+                    sb0.Append("...");
                 }
-                if (cutTableAtLineEnd)
+            }
+            ConsoleUtilities.ReplaceLine(line, sb0.ToString());
+
+
+            StringBuilder sb1 = new($" {crossing}");
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                sb1.Append($"{ConsoleUtilities.GetCharakters(longest[i] + 2, horizontal)}{crossing}");
+            }
+            if (cutTableAtLineEnd)
+            {
+                if (sb1.Length > ConsoleWidth)
                 {
-                    if (sb.Length > ConsoleWidth)
-                    {
-                        sb.Remove(ConsoleWidth - 3, sb.Length - ConsoleWidth + 3);
-                        sb.Append("...");
-                    }
+                    sb1.Remove(ConsoleWidth - 3, sb1.Length - ConsoleWidth + 3);
+                    sb1.Append("...");
                 }
-                return sb.ToString();
-            });
+            }
+            ConsoleUtilities.ReplaceLine(line + 1, sb1.ToString());
 
             for (int i = 0 ; i < table.Rows.Count ; i++)
             {
                 line = ConsoleUtilities.NormalizeLineIndex(line + i + 2) - i - 2;
-                ConsoleUtilities.ReplaceLine(line + i + 2, () =>
+
+                StringBuilder sb = new($" {vertikal}");
+                for (int j = 0 ; j < table.Columns.Count ; j++)
                 {
-                    StringBuilder sb = new($" {vertikal}");
-                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    sb.Append($" {table.Rows[i][table.Columns[j]]}{ConsoleUtilities.GetSpaces(longest[j] - table.Rows[i][table.Columns[j]].ToString().Length)} {vertikal}");
+                }
+                if (cutTableAtLineEnd)
+                {
+                    if (sb.Length > ConsoleWidth)
                     {
-                        sb.Append($" {table.Rows[i][table.Columns[j]]}{ConsoleUtilities.GetSpaces(longest[j] - table.Rows[i][table.Columns[j]].ToString().Length)} {vertikal}");
+                        sb.Remove(ConsoleWidth - 3, sb.Length - ConsoleWidth + 3);
+                        sb.Append("...");
                     }
-                    if (cutTableAtLineEnd)
-                    {
-                        if (sb.Length > ConsoleWidth)
-                        {
-                            sb.Remove(ConsoleWidth - 3, sb.Length - ConsoleWidth + 3);
-                            sb.Append("...");
-                        }
-                    }
-                    return sb.ToString();
-                });
+                }
+                ConsoleUtilities.ReplaceLine(line + i + 2, sb.ToString());
             }
         }
 
