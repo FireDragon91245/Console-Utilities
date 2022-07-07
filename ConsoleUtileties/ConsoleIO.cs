@@ -343,7 +343,7 @@ namespace ConsoleUtilities
                 string value = category switch
                 {
                     FileCategorys.Size => Conversions.FormatSize(file.Length),
-                    FileCategorys.Name => file.Name.Substring(0, file.Name.Length - file.Name.Split('.').Last().Length - 1),
+                    FileCategorys.Name => file.Name[..( file.Name.Length - file.Name.Split('.').Last().Length - 1 )],
                     FileCategorys.Extension => '.' + file.Name.Split('.').Last(),
                     FileCategorys.Atributes => file.Attributes.ToString(),
                     FileCategorys.CreationTime => file.CreationTime.ToString(),
