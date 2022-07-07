@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 
 namespace ConsoleUtilities
@@ -30,35 +31,175 @@ namespace ConsoleUtilities
         /// <param name="list">The list</param>
         public static void PrintList<TKey, TValue> (int line, Dictionary<TKey, TValue> list)
         {
-            int longestKey = 0;
-            foreach (TKey key in list.Keys)
-            {
-                if (key.ToString().Length > longestKey)
-                    longestKey = key.ToString().Length;
-            }
-            int valueLength = ConsoleWidth - longestKey - 8;
-            int index = -1;
+            int sizePerColumn = ( ConsoleWidth - 9 ) / 2;
+            int index = line;
+            string septerationLine = $" +{ConsoleUtilities.GetCharakters(sizePerColumn + 2, '-')}+{ConsoleUtilities.GetCharakters(sizePerColumn + 2, '-')}+ ";
+
+            ConsoleUtilities.ReplaceLine(index, septerationLine);
             foreach (KeyValuePair<TKey, TValue> pair in list)
             {
-                index++;
-                index = ConsoleUtilities.NormalizeLineIndex(index);
-                ConsoleUtilities.ReplaceLine(line + index, $" +{ConsoleUtilities.GetCharakters(longestKey + 2, '-')}+{ConsoleUtilities.GetCharakters(valueLength + 2, '-')}+");
-                bool first = true;
-                foreach (string s in Conversions.ChopValue(pair.Value.ToString(), valueLength))
+                List<string>[] valus = { Conversions.ChopValue(pair.Key.ToString(), sizePerColumn), Conversions.ChopValue(pair.Value.ToString(), sizePerColumn) };
+                int longestValue = valus[0].Count > valus[1].Count ? valus[0].Count : valus[1].Count;
+
+                for (int i = 0 ; i < longestValue ; i++)
                 {
-                    index++;
-                    if (first)
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, $" | {( i > valus[0].Count - 1 ? ConsoleUtilities.GetSpaces(sizePerColumn) : valus[0][i] + ConsoleUtilities.GetSpaces(sizePerColumn - valus[0][i].Length) )} | {( i > valus[1].Count ? ConsoleUtilities.GetSpaces(sizePerColumn) : valus[1][i] + ConsoleUtilities.GetSpaces(sizePerColumn - valus[1][i].Length) )} | ");
+                }
+
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, septerationLine);
+            }
+        }
+
+        /// <summary>
+        /// Print a Dictionary as List, colums get automaticly resized, size gets determined by amount of text in that column
+        /// </summary>
+        /// <typeparam name="TKey">Key Type</typeparam>
+        /// <typeparam name="TValue">Value Type</typeparam>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="list">The DataTable to print</param>
+        public static void PrintSmartList<TKey, TValue> (int line, Dictionary<TKey, TValue> list)
+        {
+            int[] columnCharCount = new int[2];
+            foreach (KeyValuePair<TKey, TValue> pair in list)
+            {
+                columnCharCount[0] += pair.Key.ToString().Length;
+                columnCharCount[1] += pair.Value.ToString().Length;
+            }
+            int[] collSize = { columnCharCount[0] * (ConsoleWidth - 9) / (columnCharCount[0] + columnCharCount[1]), columnCharCount[1] * (ConsoleWidth - 9) / ( columnCharCount[0] + columnCharCount[1] ) };
+            for (int i = 0 ; i < 2 ; i++)
+            {
+                if (collSize[i] < 2)
+                {
+                    collSize[i] = 2;
+                    if (i < collSize.Length - 1)
                     {
-                        first = false;
-                        ConsoleUtilities.ReplaceLine(line + index, $" | {pair.Key}{ConsoleUtilities.GetSpaces(longestKey - pair.Key.ToString().Length)} | {s}{ConsoleUtilities.GetSpaces(valueLength - s.Length)} |");
-                    }
-                    else
-                    {
-                        ConsoleUtilities.ReplaceLine(line + index, $" | {ConsoleUtilities.GetSpaces(longestKey)} | {s}{ConsoleUtilities.GetSpaces(valueLength - s.Length)} |");
+                        collSize[i + 1] -= 2;
                     }
                 }
             }
-            ConsoleUtilities.ReplaceLine(line + index + 1, $" +{ConsoleUtilities.GetCharakters(longestKey + 2, '-')}+{ConsoleUtilities.GetCharakters(valueLength + 2, '-')}+");
+            int index = line;
+            string septerationLine = $" +{ConsoleUtilities.GetCharakters(collSize[0] + 2, '-')}+{ConsoleUtilities.GetCharakters(collSize[1] + 2, '-')}+ ";
+
+            ConsoleUtilities.ReplaceLine(index, septerationLine);
+            foreach (KeyValuePair<TKey, TValue> pair in list)
+            {
+                List<string>[] valus = { Conversions.ChopValue(pair.Key.ToString(), collSize[0]), Conversions.ChopValue(pair.Value.ToString(), collSize[1]) };
+                int longestValue = valus[0].Count > valus[1].Count ? valus[0].Count : valus[1].Count;
+
+                for (int i = 0 ; i < longestValue ; i++)
+                {
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, $" | {( i > valus[0].Count - 1 ? ConsoleUtilities.GetSpaces(collSize[0]) : valus[0][i] + ConsoleUtilities.GetSpaces(collSize[0] - valus[0][i].Length) )} | {( i > valus[1].Count ? ConsoleUtilities.GetSpaces(collSize[1]) : valus[1][i] + ConsoleUtilities.GetSpaces(collSize[1] - valus[1][i].Length) )} | ");
+                }
+
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, septerationLine);
+            }
+        }
+
+        /// <summary>
+        /// Print a Dictionary as List, colums get automaticly resized, size gets determined by amount of text in that column
+        /// </summary>
+        /// <typeparam name="TKey">Key Type</typeparam>
+        /// <typeparam name="TValue">Value Type</typeparam>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="list">The DataTable to print</param>
+        /// <param name="style">How the list looks</param>
+        public static void PrintSmartList<TKey, TValue> (int line, Dictionary<TKey, TValue> list, TableLook style)
+        {
+            (char vertical, char horizontal, char crosing) = Conversions.GetCharForStyle(style);
+            int[] columnCharCount = new int[2];
+            foreach (KeyValuePair<TKey, TValue> pair in list)
+            {
+                columnCharCount[0] += pair.Key.ToString().Length;
+                columnCharCount[1] += pair.Value.ToString().Length;
+            }
+            int[] collSize = { columnCharCount[0] * ( ConsoleWidth - 9 ) / ( columnCharCount[0] + columnCharCount[1] ), columnCharCount[1] * ( ConsoleWidth - 9 ) / ( columnCharCount[0] + columnCharCount[1] ) };
+            for (int i = 0 ; i < 2 ; i++)
+            {
+                if (collSize[i] < 2)
+                {
+                    collSize[i] = 2;
+                    if (i < collSize.Length - 1)
+                    {
+                        collSize[i + 1] -= 2;
+                    }
+                }
+            }
+            int index = line;
+            string septerationLine = $" {crosing}{ConsoleUtilities.GetCharakters(collSize[0] + 2, horizontal)}{crosing}{ConsoleUtilities.GetCharakters(collSize[1] + 2, horizontal)}{crosing} ";
+
+            ConsoleUtilities.ReplaceLine(index, septerationLine);
+            foreach (KeyValuePair<TKey, TValue> pair in list)
+            {
+                List<string>[] valus = { Conversions.ChopValue(pair.Key.ToString(), collSize[0]), Conversions.ChopValue(pair.Value.ToString(), collSize[1]) };
+                int longestValue = valus[0].Count > valus[1].Count ? valus[0].Count : valus[1].Count;
+
+                for (int i = 0 ; i < longestValue ; i++)
+                {
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, $" {vertical} {( i > valus[0].Count - 1 ? ConsoleUtilities.GetSpaces(collSize[0]) : valus[0][i] + ConsoleUtilities.GetSpaces(collSize[0] - valus[0][i].Length) )} {vertical} {( i > valus[1].Count ? ConsoleUtilities.GetSpaces(collSize[1]) : valus[1][i] + ConsoleUtilities.GetSpaces(collSize[1] - valus[1][i].Length) )} {vertical} ");
+                }
+
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, septerationLine);
+            }
+        }
+
+        /// <summary>
+        /// Print a Dictionary as List, colums get automaticly resized, size gets determined by amount of text in that column
+        /// </summary>
+        /// <typeparam name="TKey">Key Type</typeparam>
+        /// <typeparam name="TValue">Value Type</typeparam>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="list">The DataTable to print</param>
+        /// <param name="style">How the list looks</param>
+        /// <param name="minColumnWidth">The minimum with that a colum can reach during automatic resize, if to smal gets defaultet to 2 if to large it gets defaultet to ( ConsoleWidth - 9 ) / 2</param>
+        public static void PrintSmartList<TKey, TValue> (int line, Dictionary<TKey, TValue> list, TableLook style, int minColumnWidth)
+        {
+            (char vertical, char horizontal, char crosing) = Conversions.GetCharForStyle(style);
+            if(minColumnWidth < 2)
+                minColumnWidth = 2;
+            if (minColumnWidth > ( ConsoleWidth - 9 ) / 2)
+                minColumnWidth = ( ConsoleWidth - 9 ) / 2;
+            int[] columnCharCount = new int[2];
+            foreach (KeyValuePair<TKey, TValue> pair in list)
+            {
+                columnCharCount[0] += pair.Key.ToString().Length;
+                columnCharCount[1] += pair.Value.ToString().Length;
+            }
+            int[] collSize = { columnCharCount[0] * ( ConsoleWidth - 9 ) / ( columnCharCount[0] + columnCharCount[1] ), columnCharCount[1] * ( ConsoleWidth - 9 ) / ( columnCharCount[0] + columnCharCount[1] ) };
+            for (int i = 0 ; i < 2 ; i++)
+            {
+                if (collSize[i] < minColumnWidth)
+                {
+                    collSize[i] = minColumnWidth;
+                    if (i < collSize.Length - 1)
+                    {
+                        collSize[i + 1] -= minColumnWidth;
+                    }
+                }
+            }
+            int index = line;
+            string septerationLine = $" {crosing}{ConsoleUtilities.GetCharakters(collSize[0] + 2, horizontal)}{crosing}{ConsoleUtilities.GetCharakters(collSize[1] + 2, horizontal)}{crosing} ";
+
+            ConsoleUtilities.ReplaceLine(index, septerationLine);
+            foreach (KeyValuePair<TKey, TValue> pair in list)
+            {
+                List<string>[] valus = { Conversions.ChopValue(pair.Key.ToString(), collSize[0]), Conversions.ChopValue(pair.Value.ToString(), collSize[1]) };
+                int longestValue = valus[0].Count > valus[1].Count ? valus[0].Count : valus[1].Count;
+
+                for (int i = 0 ; i < longestValue ; i++)
+                {
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, $" {vertical} {( i > valus[0].Count - 1 ? ConsoleUtilities.GetSpaces(collSize[0]) : valus[0][i] + ConsoleUtilities.GetSpaces(collSize[0] - valus[0][i].Length) )} {vertical} {( i > valus[1].Count ? ConsoleUtilities.GetSpaces(collSize[1]) : valus[1][i] + ConsoleUtilities.GetSpaces(collSize[1] - valus[1][i].Length) )} {vertical} ");
+                }
+
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, septerationLine);
+            }
         }
 
         /// <summary>
@@ -72,35 +213,26 @@ namespace ConsoleUtilities
         public static void PrintList<TKey, TValue> (int line, Dictionary<TKey, TValue> list, TableLook style)
         {
             (char vertical, char horizontal, char crosing) = Conversions.GetCharForStyle(style);
-            int longestKey = 0;
-            foreach (TKey key in list.Keys)
-            {
-                if (key.ToString().Length > longestKey)
-                    longestKey = key.ToString().Length;
-            }
-            int valueLength = ConsoleWidth - longestKey - 8;
-            int index = -1;
+
+            int sizePerColumn = ( ConsoleWidth - 9 ) / 2;
+            int index = line;
+            string septerationLine = $" {crosing}{ConsoleUtilities.GetCharakters(sizePerColumn + 2, horizontal)}{crosing} {ConsoleUtilities.GetCharakters(sizePerColumn + 2, horizontal)}{crosing} ";
+
+            ConsoleUtilities.ReplaceLine(index, septerationLine);
             foreach (KeyValuePair<TKey, TValue> pair in list)
             {
-                index++;
-                index = ConsoleUtilities.NormalizeLineIndex(index);
-                ConsoleUtilities.ReplaceLine(line + index, $" {crosing}{ConsoleUtilities.GetCharakters(longestKey + 2, horizontal)}{crosing}{ConsoleUtilities.GetCharakters(valueLength + 2, horizontal)}{crosing}");
-                bool first = true;
-                foreach (string s in Conversions.ChopValue(pair.Value.ToString(), valueLength))
+                List<string>[] valus = { Conversions.ChopValue(pair.Key.ToString(), sizePerColumn), Conversions.ChopValue(pair.Value.ToString(), sizePerColumn) };
+                int longestValue = valus[0].Count > valus[1].Count ? valus[0].Count : valus[1].Count;
+
+                for (int i = 0 ; i < longestValue ; i++)
                 {
-                    index++;
-                    if (first)
-                    {
-                        first = false;
-                        ConsoleUtilities.ReplaceLine(line + index, $" {vertical} {pair.Key}{ConsoleUtilities.GetSpaces(longestKey - pair.Key.ToString().Length)} {vertical} {s}{ConsoleUtilities.GetSpaces(valueLength - s.Length)} {vertical}");
-                    }
-                    else
-                    {
-                        ConsoleUtilities.ReplaceLine(line + index, $" {vertical} {ConsoleUtilities.GetSpaces(longestKey)} {vertical} {s}{ConsoleUtilities.GetSpaces(valueLength - s.Length)} {vertical}");
-                    }
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, $" {vertical} {( i > valus[0].Count - 1 ? ConsoleUtilities.GetSpaces(sizePerColumn) : valus[0][i] + ConsoleUtilities.GetSpaces(sizePerColumn - valus[0][i].Length) )} {vertical} {( i > valus[1].Count ? ConsoleUtilities.GetSpaces(sizePerColumn) : valus[1][i] + ConsoleUtilities.GetSpaces(sizePerColumn - valus[1][i].Length) )} {vertical} ");
                 }
+
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, septerationLine);
             }
-            ConsoleUtilities.ReplaceLine(line + index + 1, $" {crosing}{ConsoleUtilities.GetCharakters(longestKey + 2, horizontal)}{crosing}{ConsoleUtilities.GetCharakters(valueLength + 2, horizontal)}{crosing}");
         }
 
         /// <summary>
@@ -112,7 +244,7 @@ namespace ConsoleUtilities
         {
             if (table.Columns.Count == 0)
                 return;
-            int spacePerColumn = (ConsoleWidth - (table.Columns.Count * 3 + 2)) / table.Columns.Count;
+            int spacePerColumn = ( ConsoleWidth - ( table.Columns.Count * 3 + 2 ) ) / table.Columns.Count;
             List<string>[] headers = new List<string>[table.Columns.Count];
             int logestHeader = 0;
             string seperationLine = " +";
@@ -123,7 +255,7 @@ namespace ConsoleUtilities
             }
             foreach (List<string> header in headers)
             {
-                if(header.Count > logestHeader)
+                if (header.Count > logestHeader)
                     logestHeader = header.Count;
             }
             int index = line;
@@ -157,7 +289,7 @@ namespace ConsoleUtilities
                 int longest = 0;
                 foreach (List<string> val in vals)
                 {
-                    if(val.Count > longest)
+                    if (val.Count > longest)
                         longest = val.Count;
                 }
                 for (int i = 0 ; i < longest ; i++)
@@ -172,6 +304,385 @@ namespace ConsoleUtilities
                         else
                         {
                             sb.Append($" {ConsoleUtilities.GetSpaces(spacePerColumn)} |");
+                        }
+                    }
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, sb.ToString());
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+            }
+        }
+
+        /// <summary>
+        /// Print a DataTable as List, colums get automaticly resized, size gets determined by amount of text in that column
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="table">The DataTable to print</param>
+        public static void PrintSmartList (int line, DataTable table)
+        {
+            if (table.Columns.Count == 0)
+                return;
+            int[] columnCharCount = new int[table.Columns.Count];
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    columnCharCount[i] += row[i].ToString().Length;
+                }
+                columnCharCount[i] += table.Columns[i].ColumnName.Length;
+            }
+            int charSum = columnCharCount.Sum();
+            int[] collSize = new int[table.Columns.Count];
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                collSize[i] = columnCharCount[i] * ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / charSum;
+            }
+            for (int i = 0 ; i < collSize.Length ; i++)
+            {
+                if (collSize[i] < 2)
+                {
+                    int rest = 2 - collSize[i];
+                    collSize[i] = 2;
+                    if (i < collSize.Length - 1)
+                    {
+                        collSize[i + 1] -= rest;
+                    }
+                    else
+                    {
+                        for (int j = table.Columns.Count - 2 ; j >= 0 ; j--)
+                        {
+                            if (collSize[j] > 2)
+                            {
+                                collSize[j] -= rest;
+                                if (collSize[j] < 2)
+                                {
+                                    rest = 2 - collSize[j];
+                                    continue;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            List<string>[] headers = new List<string>[table.Columns.Count];
+            string seperationLine = " +";
+            int longestHeader = 0;
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                seperationLine += ConsoleUtilities.GetCharakters(collSize[i] + 2, '-') + "+";
+                headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, collSize[i]);
+                if(headers[i].Count > longestHeader)
+                    longestHeader = headers[i].Count;
+            }
+            foreach (List<string> header in headers)
+            {
+                if (header.Count > longestHeader)
+                    longestHeader = header.Count;
+            }
+            int index = line;
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            for (int i = 0 ; i < longestHeader ; i++)
+            {
+                string s = " |";
+                for (int j = 0 ; j < table.Columns.Count ; j++)
+                {
+                    if (i < headers[j].Count)
+                    {
+                        s += $" {headers[j][i]}{ConsoleUtilities.GetSpaces(collSize[j] - headers[j][i].Length)} |";
+                    }
+                    else
+                    {
+                        s += $" {ConsoleUtilities.GetSpaces(collSize[j])} |";
+                    }
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, s);
+            }
+            index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            foreach (DataRow row in table.Rows)
+            {
+                List<string>[] vals = new List<string>[table.Columns.Count];
+                for (int i = 0 ; i < table.Columns.Count ; i++)
+                {
+                    vals[i] = Conversions.ChopValue(row[i].ToString(), collSize[i]);
+                }
+                int longest = 0;
+                foreach (List<string> val in vals)
+                {
+                    if (val.Count > longest)
+                        longest = val.Count;
+                }
+                for (int i = 0 ; i < longest ; i++)
+                {
+                    StringBuilder sb = new(" |");
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < vals[j].Count)
+                        {
+                            sb.Append($" {vals[j][i]}{ConsoleUtilities.GetSpaces(collSize[j] - vals[j][i].Length)} |");
+                        }
+                        else
+                        {
+                            sb.Append($" {ConsoleUtilities.GetSpaces(collSize[j])} |");
+                        }
+                    }
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, sb.ToString());
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+            }
+        }
+
+        /// <summary>
+        /// Print a DataTable as List, colums get automaticly resized, size gets determined by amount of text in that column
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="table">The DataTable to print</param>
+        /// <param name="style">How the list looks</param>
+        public static void PrintSmartList (int line, DataTable table, TableLook style)
+        {
+            if (table.Columns.Count == 0)
+                return;
+
+            (char vertical, char horizontal, char crosing) = Conversions.GetCharForStyle(style);
+            int[] columnCharCount = new int[table.Columns.Count];
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    columnCharCount[i] += row[i].ToString().Length;
+                }
+                columnCharCount[i] += table.Columns[i].ColumnName.Length;
+            }
+            int charSum = columnCharCount.Sum();
+            int[] collSize = new int[table.Columns.Count];
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                collSize[i] = columnCharCount[i] * ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / charSum;
+            }
+            for (int i = 0 ; i < collSize.Length ; i++)
+            {
+                if (collSize[i] < 2)
+                {
+                    int rest = 2 - collSize[i];
+                    collSize[i] = 2;
+                    if (i < collSize.Length - 1)
+                    {
+                        collSize[i + 1] -= rest;
+                    }
+                    else
+                    {
+                        for (int j = table.Columns.Count - 2 ; j >= 0 ; j--)
+                        {
+                            if (collSize[j] > 2)
+                            {
+                                collSize[j] -= rest;
+                                if (collSize[j] < 2)
+                                {
+                                    rest = 2 - collSize[j];
+                                    continue;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            List<string>[] headers = new List<string>[table.Columns.Count];
+            string seperationLine = $" {crosing}";
+            int longestHeader = 0;
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                seperationLine += ConsoleUtilities.GetCharakters(collSize[i] + 2, horizontal) + crosing;
+                headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, collSize[i]);
+                if (headers[i].Count > longestHeader)
+                    longestHeader = headers[i].Count;
+            }
+            foreach (List<string> header in headers)
+            {
+                if (header.Count > longestHeader)
+                    longestHeader = header.Count;
+            }
+            int index = line;
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            for (int i = 0 ; i < longestHeader ; i++)
+            {
+                string s = $" {vertical}";
+                for (int j = 0 ; j < table.Columns.Count ; j++)
+                {
+                    if (i < headers[j].Count)
+                    {
+                        s += $" {headers[j][i]}{ConsoleUtilities.GetSpaces(collSize[j] - headers[j][i].Length)} {vertical}";
+                    }
+                    else
+                    {
+                        s += $" {ConsoleUtilities.GetSpaces(collSize[j])} {vertical}";
+                    }
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, s);
+            }
+            index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            foreach (DataRow row in table.Rows)
+            {
+                List<string>[] vals = new List<string>[table.Columns.Count];
+                for (int i = 0 ; i < table.Columns.Count ; i++)
+                {
+                    vals[i] = Conversions.ChopValue(row[i].ToString(), collSize[i]);
+                }
+                int longest = 0;
+                foreach (List<string> val in vals)
+                {
+                    if (val.Count > longest)
+                        longest = val.Count;
+                }
+                for (int i = 0 ; i < longest ; i++)
+                {
+                    StringBuilder sb = new($" {vertical}");
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < vals[j].Count)
+                        {
+                            sb.Append($" {vals[j][i]}{ConsoleUtilities.GetSpaces(collSize[j] - vals[j][i].Length)} {vertical}");
+                        }
+                        else
+                        {
+                            sb.Append($" {ConsoleUtilities.GetSpaces(collSize[j])} {vertical}");
+                        }
+                    }
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, sb.ToString());
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+            }
+        }
+
+        /// <summary>
+        /// Print a DataTable as List, colums get automaticly resized, size gets determined by amount of text in that column
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="table">The DataTable to print</param>
+        /// <param name="style">How the list looks</param>
+        /// <param name="minColumnWidth">The minimum with that a colum can reach during automatic resize, if to smal gets defaultet to 2 if to large it gets defaultet to ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / table.Columns.Count</param>
+        public static void PrintSmartList (int line, DataTable table, TableLook style, int minColumnWidth)
+        {
+            if (table.Columns.Count == 0)
+                return;
+            if(minColumnWidth < 2)
+                minColumnWidth = 2;
+            if (minColumnWidth > ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / table.Columns.Count)
+                minColumnWidth = ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / table.Columns.Count;
+            (char vertical, char horizontal, char crosing) = Conversions.GetCharForStyle(style);
+            int[] columnCharCount = new int[table.Columns.Count];
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    columnCharCount[i] += row[i].ToString().Length;
+                }
+                columnCharCount[i] += table.Columns[i].ColumnName.Length;
+            }
+            int charSum = columnCharCount.Sum();
+            int[] collSize = new int[table.Columns.Count];
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                collSize[i] = columnCharCount[i] * ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / charSum;
+            }
+            for (int i = 0 ; i < collSize.Length ; i++)
+            {
+                if (collSize[i] < minColumnWidth)
+                {
+                    int rest = minColumnWidth - collSize[i];
+                    collSize[i] = minColumnWidth;
+                    if (i < collSize.Length - 1)
+                    {
+                        collSize[i + 1] -= rest;
+                    }
+                    else
+                    {
+                        for (int j = table.Columns.Count - 2 ; j >= 0; j--)
+                        {
+                            if (collSize[j] > minColumnWidth)
+                            {
+                                collSize[j] -= rest;
+                                if (collSize[j] < minColumnWidth)
+                                {
+                                    rest = minColumnWidth - collSize[j];
+                                    continue;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            List<string>[] headers = new List<string>[table.Columns.Count];
+            string seperationLine = $" {crosing}";
+            int longestHeader = 0;
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                seperationLine += ConsoleUtilities.GetCharakters(collSize[i] + 2, horizontal) + crosing;
+                headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, collSize[i]);
+                if (headers[i].Count > longestHeader)
+                    longestHeader = headers[i].Count;
+            }
+            foreach (List<string> header in headers)
+            {
+                if (header.Count > longestHeader)
+                    longestHeader = header.Count;
+            }
+            int index = line;
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            for (int i = 0 ; i < longestHeader ; i++)
+            {
+                string s = $" {vertical}";
+                for (int j = 0 ; j < table.Columns.Count ; j++)
+                {
+                    if (i < headers[j].Count)
+                    {
+                        s += $" {headers[j][i]}{ConsoleUtilities.GetSpaces(collSize[j] - headers[j][i].Length)} {vertical}";
+                    }
+                    else
+                    {
+                        s += $" {ConsoleUtilities.GetSpaces(collSize[j])} {vertical}";
+                    }
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, s);
+            }
+            index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            foreach (DataRow row in table.Rows)
+            {
+                List<string>[] vals = new List<string>[table.Columns.Count];
+                for (int i = 0 ; i < table.Columns.Count ; i++)
+                {
+                    vals[i] = Conversions.ChopValue(row[i].ToString(), collSize[i]);
+                }
+                int longest = 0;
+                foreach (List<string> val in vals)
+                {
+                    if (val.Count > longest)
+                        longest = val.Count;
+                }
+                for (int i = 0 ; i < longest ; i++)
+                {
+                    StringBuilder sb = new($" {vertical}");
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < vals[j].Count)
+                        {
+                            sb.Append($" {vals[j][i]}{ConsoleUtilities.GetSpaces(collSize[j] - vals[j][i].Length)} {vertical}");
+                        }
+                        else
+                        {
+                            sb.Append($" {ConsoleUtilities.GetSpaces(collSize[j])} {vertical}");
                         }
                     }
                     index = ConsoleUtilities.NormalizeLineIndex(index + 1);
@@ -288,7 +799,7 @@ namespace ConsoleUtilities
                     if (FindLastSpaceBeforeIndex(rest, valueLength, out int index))
                     {
                         list.Add(rest[..index]);
-                        rest = rest[(index + 1)..];
+                        rest = rest[( index + 1 )..];
                     }
                     else
                     {

@@ -5,7 +5,6 @@ namespace ConsoleUtilities
 
     public static class ConsoleBars
     {
-
         private static int ConsoleWidth
         {
             get
