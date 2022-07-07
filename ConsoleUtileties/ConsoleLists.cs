@@ -315,6 +315,90 @@ namespace ConsoleUtilities
         }
 
         /// <summary>
+        /// Prints a table like a list
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="table">the table thats printet</param>
+        /// <param name="printHeader">if true the headers of the table get printet</param>
+        public static void PrintList (int line, DataTable table, bool printHeader = true)
+        {
+            if (table.Columns.Count == 0)
+                return;
+            int spacePerColumn = ( ConsoleWidth - ( table.Columns.Count * 3 + 2 ) ) / table.Columns.Count;
+            List<string>[]? headers = printHeader ? new List<string>[table.Columns.Count] : null;
+            int logestHeader = 0;
+            string seperationLine = " +";
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                seperationLine += ConsoleUtilities.GetCharakters(spacePerColumn + 2, '-') + "+";
+                if(printHeader)
+                headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, spacePerColumn);
+            }
+            int index = line;
+            if (printHeader)
+            {
+                foreach (List<string> header in headers)
+                {
+                    if (header.Count > logestHeader)
+                        logestHeader = header.Count;
+                }
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+                for (int i = 0 ; i < logestHeader ; i++)
+                {
+                    string s = " |";
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < headers[j].Count)
+                        {
+                            s += $" {headers[j][i]}{ConsoleUtilities.GetSpaces(spacePerColumn - headers[j][i].Length)} |";
+                        }
+                        else
+                        {
+                            s += $" {ConsoleUtilities.GetSpaces(spacePerColumn)} |";
+                        }
+                    }
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, s);
+                }
+            }
+            index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            foreach (DataRow row in table.Rows)
+            {
+                List<string>[] vals = new List<string>[table.Columns.Count];
+                for (int i = 0 ; i < table.Columns.Count ; i++)
+                {
+                    vals[i] = Conversions.ChopValue(row[i].ToString(), spacePerColumn);
+                }
+                int longest = 0;
+                foreach (List<string> val in vals)
+                {
+                    if (val.Count > longest)
+                        longest = val.Count;
+                }
+                for (int i = 0 ; i < longest ; i++)
+                {
+                    StringBuilder sb = new(" |");
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < vals[j].Count)
+                        {
+                            sb.Append($" {vals[j][i]}{ConsoleUtilities.GetSpaces(spacePerColumn - vals[j][i].Length)} |");
+                        }
+                        else
+                        {
+                            sb.Append($" {ConsoleUtilities.GetSpaces(spacePerColumn)} |");
+                        }
+                    }
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, sb.ToString());
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+            }
+        }
+
+        /// <summary>
         /// Print a DataTable as List, colums get automaticly resized, size gets determined by amount of text in that column
         /// </summary>
         /// <param name="line">the line to start printing at</param>
@@ -775,11 +859,98 @@ namespace ConsoleUtilities
         }
 
         /// <summary>
+        /// Prints a table not like a Table but each row like a list
+        /// </summary>
+        /// <param name="line">The line to start printing at</param>
+        /// <param name="table">The table thats printet</param>
+        /// <param name="style">How The list looks</param>
+        /// <param name="printHeader">if true the headers of the table get printet</param>
+        public static void PrintList (int line, DataTable table, TableLook style, bool printHeader = true)
+        {
+            if (table.Columns.Count == 0)
+                return;
+            (char vertical, char horizontal, char crosing) = Conversions.GetCharForStyle(style);
+            int spacePerColumn = ( ConsoleWidth - ( table.Columns.Count * 3 + 2 ) ) / table.Columns.Count;
+            List<string>[]? headers = printHeader ? new List<string>[table.Columns.Count] : null;
+            int logestHeader = 0;
+            string seperationLine = $" {crosing}";
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                seperationLine += ConsoleUtilities.GetCharakters(spacePerColumn + 2, horizontal) + crosing;
+                if(printHeader)
+                headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, spacePerColumn);
+            }
+            int index = line;
+            if (printHeader)
+            {
+                foreach (List<string> header in headers)
+                {
+                    if (header.Count > logestHeader)
+                        logestHeader = header.Count;
+                }
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+                for (int i = 0 ; i < logestHeader ; i++)
+                {
+                    string s = $" {vertical}";
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < headers[j].Count)
+                        {
+                            s += $" {headers[j][i]}{ConsoleUtilities.GetSpaces(spacePerColumn - headers[j][i].Length)} {vertical}";
+                        }
+                        else
+                        {
+                            s += $" {ConsoleUtilities.GetSpaces(spacePerColumn)} {vertical}";
+                        }
+                    }
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, s);
+                }
+            }
+            index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            foreach (DataRow row in table.Rows)
+            {
+                List<string>[] vals = new List<string>[table.Columns.Count];
+                for (int i = 0 ; i < table.Columns.Count ; i++)
+                {
+                    vals[i] = Conversions.ChopValue(row[i].ToString(), spacePerColumn);
+                }
+                int longest = 0;
+                foreach (List<string> val in vals)
+                {
+                    if (val.Count > longest)
+                        longest = val.Count;
+                }
+                for (int i = 0 ; i < longest ; i++)
+                {
+                    StringBuilder sb = new($" {vertical}");
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < vals[j].Count)
+                        {
+                            sb.Append($" {vals[j][i]}{ConsoleUtilities.GetSpaces(spacePerColumn - vals[j][i].Length)} {vertical}");
+                        }
+                        else
+                        {
+                            sb.Append($" {ConsoleUtilities.GetSpaces(spacePerColumn)} {vertical}");
+                        }
+                    }
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, sb.ToString());
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+            }
+        }
+
+        /// <summary>
         /// Print a DataTable as List, colums get automaticly resized, size gets determined by amount of text in that column
         /// </summary>
         /// <param name="line">the line to start printing at</param>
         /// <param name="table">The DataTable to print</param>
         /// <param name="style">How the list looks</param>
+        /// <param name="printHeader">if true the headers of the table get printet</param>
         public static void PrintSmartList (int line, DataTable table, TableLook style, bool printHeader = true)
         {
             if (table.Columns.Count == 0)
@@ -914,6 +1085,7 @@ namespace ConsoleUtilities
         /// <param name="table">The DataTable to print</param>
         /// <param name="style">How the list looks</param>
         /// <param name="minColumnWidth">The minimum with that a colum can reach during automatic resize, if to smal gets defaultet to 2 if to large it gets defaultet to ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / table.Columns.Count</param>
+        /// <param name="printHeader">if true the headers of the table get printet</param>
         public static void PrintSmartList (int line, DataTable table, TableLook style, int minColumnWidth, bool printHeader = true)
         {
             if (table.Columns.Count == 0)
@@ -1049,6 +1221,7 @@ namespace ConsoleUtilities
         /// </summary>
         /// <param name="line">the line to start printing at</param>
         /// <param name="table">The DataTable to print</param>
+        /// <param name="printHeader">if true the headers of the table get printet</param>
         public static void PrintSmartList (int line, DataTable table, bool printHeader = true)
         {
             if (table.Columns.Count == 0)
