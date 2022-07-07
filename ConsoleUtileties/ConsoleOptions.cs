@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace ConsoleUtilities
@@ -125,6 +126,34 @@ namespace ConsoleUtilities
             }
         }
 
+        private static int Mode = -1;
+        /// <summary>
+        /// Switch the Console mode to a RGB cabable mode
+        /// </summary>
+        public static void EnableRGBConsoleMode ()
+        {
+            IntPtr handle = GetStdHandle(-11);
+            GetConsoleMode(handle, out int mode);
+            Mode = mode;
+            SetConsoleMode(handle, mode | 0x4);
+        }
+
+        internal static bool IsRGBModeEnabled ()
+        {
+            return Mode != -1;
+        }
+
+        /// <summary>
+        /// Disables the RGB mode if enabled with <see cref="EnableRGBConsoleMode"/>
+        /// </summary>
+        public static void DisableRGBConsoleMode ()
+        {
+            if (Mode == -1)
+                return;
+            IntPtr handle = GetStdHandle(-11);
+            SetConsoleMode(handle, Mode);
+        }
+
         private static void ResetWindowMenu ()
         {
             IntPtr consoleWindow = GetConsoleWindow();
@@ -142,5 +171,14 @@ namespace ConsoleUtilities
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetSystemMenu (IntPtr hWnd, bool bRevert);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool SetConsoleMode (IntPtr hConsoleHandle, int mode);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool GetConsoleMode (IntPtr handle, out int mode);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr GetStdHandle (int handle);
     }
 }

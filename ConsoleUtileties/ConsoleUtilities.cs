@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Text;
 
 namespace ConsoleUtilities
@@ -115,6 +116,58 @@ namespace ConsoleUtilities
         public static string GetSpaces (int num)
         {
             return GetCharakters(num, ' ');
+        }
+
+        /// <summary>
+        /// Set a custom RGB color as console foreground color
+        /// IMPORTANT: Only works on Windwos after Aneversary Update
+        /// </summary>
+        /// <param name="col">Color, alpha is ignored</param>
+        public static void SetRGBConsoleForegroundColor (Color col)
+        {
+            if(!ConsoleOptions.IsRGBModeEnabled())
+                ConsoleOptions.EnableRGBConsoleMode();
+            Console.Write("\x1b[38;2;" + col.R + ";" + col.G + ";" + col.B + "m");
+        }
+
+        /// <summary>
+        /// Set a custom RGB color as console foreground color
+        /// IMPORTANT: Only works on Windwos after Aneversary Update
+        /// </summary>
+        /// <param name="r">Red</param>
+        /// <param name="g">Green</param>
+        /// <param name="b">Blue</param>
+        public static void SetRGBConsoleForegroundColor (int r, int g, int b)
+        {
+            if (!ConsoleOptions.IsRGBModeEnabled())
+                ConsoleOptions.EnableRGBConsoleMode();
+            Console.Write("\x1b[38;2;" + r + ";" + g + ";" + b + "m");
+        }
+
+        /// <summary>
+        /// Set a custom RGB color as console background color
+        /// IMPORTANT: Only works on Windwos after Aneversary Update
+        /// </summary>
+        /// <param name="col">Color, alpha is ignored</param>
+        public static void SetRGBConsoleBackgroundColor (Color col)
+        {
+            if (!ConsoleOptions.IsRGBModeEnabled())
+                ConsoleOptions.EnableRGBConsoleMode();
+            Console.Write("\x1b[48;2;" + col.R + ";" + col.G + ";" + col.B + "m");
+        }
+
+        /// <summary>
+        /// Set a custom RGB color as console background color
+        /// IMPORTANT: Only works on Windwos after Aneversary Update
+        /// </summary>
+        /// <param name="r">Red</param>
+        /// <param name="g">Green</param>
+        /// <param name="b">Blue</param>
+        public static void SetRGBConsoleBackgroundColor (int r, int g, int b)
+        {
+            if (!ConsoleOptions.IsRGBModeEnabled())
+                ConsoleOptions.EnableRGBConsoleMode();
+            Console.Write("\x1b[48;2;" + r + ";" + g + ";" + b + "m");
         }
 
         //Clear a line by replacing everything with spaces

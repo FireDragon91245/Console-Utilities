@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Reflection;
+using System.Drawing;
 
 namespace ConsoleUtilities
 {
