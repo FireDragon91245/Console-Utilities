@@ -18,6 +18,13 @@ namespace ConsoleUtilities
              * This class is just for debuging and testing becourse you dont need a Programm Class or Main Function
              * in asemblys!!!
              */
+            BarColor col = new()
+            {
+                BarCasingForegroundColor = Color.Aqua,
+                BarProgressForegroundColor = Color.Red,
+                PercentageForegroundColor = Color.Orange
+            };
+            ConsoleBars.ProgressBar(1, 10, 100, "hey", BarArangement.BarAndTitleFolowedByPercentageInBar, BarLook.StarFilling, col);
             return;
         }
     }

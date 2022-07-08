@@ -5,6 +5,8 @@ namespace ConsoleUtilities
 
     public static class ConsoleBars
     {
+        private static readonly string resetColorString = ConsoleUtilities.GetResetColorString();
+
         private static int ConsoleWidth
         {
             get
@@ -168,99 +170,114 @@ namespace ConsoleUtilities
         /// <param name="style">How the ProgresBar Looks</param>
         public static void ProgressBar (int line, int val, int max, string title, BarArangement arangement, BarLook style)
         {
+            int fill = val * ConsoleWidth / max;
+            double percent = val * 100d / max;
+            ProgressBarPrinter(line, fill, percent, title, arangement, style, new BarColor());
+        }
+
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
+        /// <param name="arangement">how the progressBar is aranged and what components it countains</param>
+        /// <param name="style">How the ProgresBar Looks</param>
+        /// <param name="color">Determin the color of the progress bar components</param>
+        public static void ProgressBar (int line, int val, int max, string title, BarArangement arangement, BarLook style, BarColor color)
+        {
+            int fill = val * ConsoleWidth / max;
+            double percent = val * 100d / max;
+            ProgressBarPrinter(line, fill, percent, title, arangement, style, color);
+        }
+
+        private static void ProgressBarPrinter (int line, int progress, double percentage, string title, BarArangement arangement, BarLook style, BarColor color)
+        {
 
             (char border1, char border2, char filling) = Conversions.GetCharsFromStyle(style);
+            ReadOnlySpan<char> titleColor = ConsoleUtilities.GetForegroundColorString(color.TitleForegroundColor) + ConsoleUtilities.GetBackgroundColorString(color.TitleBackgroundColor);
+            ReadOnlySpan<char> percentageColor = ConsoleUtilities.GetForegroundColorString(color.PercentageForegroundColor) + ConsoleUtilities.GetBackgroundColorString(color.PercentageBackgroundColor);
+            ReadOnlySpan<char> borderColor = ConsoleUtilities.GetForegroundColorString(color.BarCasingForegroundColor) + ConsoleUtilities.GetBackgroundColorString(color.BarCasingBackgroundColor);
+            ReadOnlySpan<char> progressColor = ConsoleUtilities.GetForegroundColorString(color.BarProgressForegroundColor) + ConsoleUtilities.GetBackgroundColorString(color.BarProgressBackgroundColor);
 
             switch (arangement)
             {
                 case BarArangement.BarOnly:
-                    ProgressBar(line, val, max);
+                    ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}{resetColorString}");
                     break;
                 case BarArangement.BarWithTitle:
-                    ProgressBar(line, val, max, title);
+                    ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}", false, false);
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}{resetColorString}");
                     break;
                 case BarArangement.BarWithTitleCentered:
-                    int fullBarWithTitleCentered = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCentered - 1)}{border2}");
+                    ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}", true, false);
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}{resetColorString}");
                     break;
                 case BarArangement.BarWithTitleAndPercentageUnder:
-                    int fullBarWithTitleAndPercentageUnder = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, title);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100d / max, 2)}%");
+                    ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}");
+                    ConsoleUtilities.ReplaceLine(line + 2, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}");
                     break;
                 case BarArangement.BarWithTitleAndPercentageUnderCentered:
-                    int fullBarWithTitleAndPercentageUnderCentered = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, title);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleAndPercentageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleAndPercentageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100d / max, 2)}%", true, false);
+                    ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}");
+                    ConsoleUtilities.ReplaceLine(line + 2, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}", true, false);
                     break;
                 case BarArangement.BarWithTitleAndPercentageInBar:
-                    int fullBarWithTitleAndPercentageInBar = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, title);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleAndPercentageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleAndPercentageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line + 1, $"{Math.Round(val * 100d / max, 2)} %", true, false);
+                    ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}");
+                    ConsoleUtilities.OverwriteLine(line + 1, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}", true, false);
                     break;
                 case BarArangement.BarWithTitleCenteredAndPercentageUnder:
-                    int fullBarWithTitleCenteredAndPercentageUnder = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCenteredAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCenteredAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100d / max, 2)}%");
+                    ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}", true, false);
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}");
+                    ConsoleUtilities.ReplaceLine(line + 2, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}");
                     break;
                 case BarArangement.BarWithTitleCenteredAndPercantageUnderCentered:
-                    int fullBarWithTitleCenteredAndPercantageUnderCentered = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCenteredAndPercantageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCenteredAndPercantageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100d / max, 2)}%", true, false);
+                    ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}", true, false);
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}");
+                    ConsoleUtilities.ReplaceLine(line + 2, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}", true, false);
                     break;
                 case BarArangement.BarWithTitleCenteredAndPercantageInBar:
-                    int fullBarWithTitleCenteredAndPercantageInBar = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCenteredAndPercantageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCenteredAndPercantageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line + 1, $"{Math.Round(val * 100d / max, 2)}%", true, false);
+                    ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}", true, false);
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}");
+                    ConsoleUtilities.OverwriteLine(line + 1, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}", true, false);
                     break;
                 case BarArangement.BarAndPercentageUnder:
-                    int fullBarAndPercentageUnder = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100d / max, 2)}%");
+                    ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}");
                     break;
                 case BarArangement.BarAndPercentageUnderCentered:
-                    int fullBarAndPercentageUnderCentered = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndPercentageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndPercentageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100d / max, 2)}%", true, false);
+                    ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}", true, false);
                     break;
                 case BarArangement.BarAndPercentageInBar:
-                    int fullBarAndPercentageInBar = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndPercentageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndPercentageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, $"{Math.Round(val * 100d / max, 2)}%", true, false);
+                    ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}");
+                    ConsoleUtilities.OverwriteLine(line, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}", true, false);
                     break;
                 case BarArangement.BarAndTitleFolowedByPercentage:
-                    int fullBarAndTitleFolowedByPercentage = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, $"{title}{Math.Round(val * 100d / max, 2)}%");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleFolowedByPercentage - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleFolowedByPercentage - 1)}{border2}");
+                    ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}{percentageColor}{Math.Round(percentage, 2)}%");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}{resetColorString}");
                     break;
                 case BarArangement.BarAndTitleFolowedByPercentageCentered:
-                    int fullBarAndTitleFolowedByPercentageCentered = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, $"{title}{Math.Round(val * 100d / max, 2)}%", true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleFolowedByPercentageCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleFolowedByPercentageCentered - 1)}{border2}");
+                    ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}{percentageColor}{Math.Round(percentage, 2)}%", true, false);
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}{resetColorString}");
                     break;
                 case BarArangement.BarAndTitleInBarAndPercentageUnder:
-                    int fullBarAndTitleInBarAndPercentageUnder = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleInBarAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleInBarAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, title, true);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100d / max, 2)}%");
+                    ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}");
+                    ConsoleUtilities.OverwriteLine(line, $"{titleColor}{title}", true);
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}");
                     break;
                 case BarArangement.BarAndTitleInBarAndPercentageUnderCentered:
-                    int fullBarAndTitleInBarAndPercentageUnderCentered = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleInBarAndPercentageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleInBarAndPercentageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, title, true);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100d / max, 2)}%", true, false);
+                    ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}");
+                    ConsoleUtilities.OverwriteLine(line, $"{titleColor}{title}", true);
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}", true, false);
                     break;
                 case BarArangement.BarAndTitleFolowedByPercentageInBar:
-                    int fullBarAndTitleFolowedByPercentageInBar = val * ConsoleWidth / max;
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleFolowedByPercentageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleFolowedByPercentageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, $"{title}{Math.Round(val * 100d / max, 2)}%", true, false);
+                    ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - progress - 1)}{borderColor}{border2}");
+                    ConsoleUtilities.OverwriteLine(line + 1, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}", true, false);
                     break;
                 default:
                     return;
@@ -278,103 +295,26 @@ namespace ConsoleUtilities
         /// <param name="style">How the ProgresBar Looks</param>
         public static void ProgressBar (int line, float val, float max, string title, BarArangement arangement, BarLook style)
         {
+            int fill = (int) Math.Round(val * ConsoleWidth / max);
+            double percentage = val * 100d / max;
+            ProgressBarPrinter(line, fill, percentage, title, arangement, style, new BarColor());
+        }
 
-            (char border1, char border2, char filling) = Conversions.GetCharsFromStyle(style);
-
-            switch (arangement)
-            {
-                case BarArangement.BarOnly:
-                    ProgressBar(line, val, max);
-                    break;
-                case BarArangement.BarWithTitle:
-                    ProgressBar(line, val, max, title);
-                    break;
-                case BarArangement.BarWithTitleCentered:
-                    int fullBarWithTitleCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCentered - 1)}{border2}");
-                    break;
-                case BarArangement.BarWithTitleAndPercentageUnder:
-                    int fullBarWithTitleAndPercentageUnder = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100 / max, 2)}%");
-                    break;
-                case BarArangement.BarWithTitleAndPercentageUnderCentered:
-                    int fullBarWithTitleAndPercentageUnderCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleAndPercentageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleAndPercentageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarWithTitleAndPercentageInBar:
-                    int fullBarWithTitleAndPercentageInBar = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleAndPercentageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleAndPercentageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line + 1, $"{Math.Round(val * 100 / max, 2)} %", true, false);
-                    break;
-                case BarArangement.BarWithTitleCenteredAndPercentageUnder:
-                    int fullBarWithTitleCenteredAndPercentageUnder = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCenteredAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCenteredAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100 / max, 2)}%");
-                    break;
-                case BarArangement.BarWithTitleCenteredAndPercantageUnderCentered:
-                    int fullBarWithTitleCenteredAndPercantageUnderCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCenteredAndPercantageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCenteredAndPercantageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarWithTitleCenteredAndPercantageInBar:
-                    int fullBarWithTitleCenteredAndPercantageInBar = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCenteredAndPercantageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCenteredAndPercantageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarAndPercentageUnder:
-                    int fullBarAndPercentageUnder = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%");
-                    break;
-                case BarArangement.BarAndPercentageUnderCentered:
-                    int fullBarAndPercentageUnderCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndPercentageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndPercentageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarAndPercentageInBar:
-                    int fullBarAndPercentageInBar = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndPercentageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndPercentageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarAndTitleFolowedByPercentage:
-                    int fullBarAndTitleFolowedByPercentage = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{title}{Math.Round(val * 100 / max, 2)}%");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleFolowedByPercentage - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleFolowedByPercentage - 1)}{border2}");
-                    break;
-                case BarArangement.BarAndTitleFolowedByPercentageCentered:
-                    int fullBarAndTitleFolowedByPercentageCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{title}{Math.Round(val * 100 / max, 2)}%", true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleFolowedByPercentageCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleFolowedByPercentageCentered - 1)}{border2}");
-                    break;
-                case BarArangement.BarAndTitleInBarAndPercentageUnder:
-                    int fullBarAndTitleInBarAndPercentageUnder = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleInBarAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleInBarAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, title, true);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%");
-                    break;
-                case BarArangement.BarAndTitleInBarAndPercentageUnderCentered:
-                    int fullBarAndTitleInBarAndPercentageUnderCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleInBarAndPercentageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleInBarAndPercentageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, title, true);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarAndTitleFolowedByPercentageInBar:
-                    int fullBarAndTitleFolowedByPercentageInBar = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleFolowedByPercentageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleFolowedByPercentageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, $"{title}{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                default:
-                    return;
-            }
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
+        /// <param name="arangement">how the progressBar is aranged and what components it countains</param>
+        /// <param name="style">How the ProgresBar Looks</param>
+        /// <param name="color">Determin the color of the progress bar components</param>
+        public static void ProgressBar (int line, float val, float max, string title, BarArangement arangement, BarLook style, BarColor color)
+        {
+            int fill = (int) Math.Round(val * ConsoleWidth / max);
+            double percentage = val * 100d / max;
+            ProgressBarPrinter(line, fill, percentage, title, arangement, style, color);
         }
 
         /// <summary>
@@ -388,103 +328,26 @@ namespace ConsoleUtilities
         /// <param name="style">How the ProgresBar Looks</param>
         public static void ProgressBar (int line, double val, double max, string title, BarArangement arangement, BarLook style)
         {
+            int fill = (int) Math.Round(val * ConsoleWidth / max);
+            double percentage = val * 100d / max;
+            ProgressBarPrinter(line, fill, percentage, title, arangement, style, new BarColor());
+        }
 
-            (char border1, char border2, char filling) = Conversions.GetCharsFromStyle(style);
-
-            switch (arangement)
-            {
-                case BarArangement.BarOnly:
-                    ProgressBar(line, val, max);
-                    break;
-                case BarArangement.BarWithTitle:
-                    ProgressBar(line, val, max, title);
-                    break;
-                case BarArangement.BarWithTitleCentered:
-                    int fullBarWithTitleCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCentered - 1)}{border2}");
-                    break;
-                case BarArangement.BarWithTitleAndPercentageUnder:
-                    int fullBarWithTitleAndPercentageUnder = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100 / max, 2)}%");
-                    break;
-                case BarArangement.BarWithTitleAndPercentageUnderCentered:
-                    int fullBarWithTitleAndPercentageUnderCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleAndPercentageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleAndPercentageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarWithTitleAndPercentageInBar:
-                    int fullBarWithTitleAndPercentageInBar = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleAndPercentageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleAndPercentageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line + 1, $"{Math.Round(val * 100 / max, 2)} %", true, false);
-                    break;
-                case BarArangement.BarWithTitleCenteredAndPercentageUnder:
-                    int fullBarWithTitleCenteredAndPercentageUnder = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCenteredAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCenteredAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100 / max, 2)}%");
-                    break;
-                case BarArangement.BarWithTitleCenteredAndPercantageUnderCentered:
-                    int fullBarWithTitleCenteredAndPercantageUnderCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCenteredAndPercantageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCenteredAndPercantageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarWithTitleCenteredAndPercantageInBar:
-                    int fullBarWithTitleCenteredAndPercantageInBar = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCenteredAndPercantageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCenteredAndPercantageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarAndPercentageUnder:
-                    int fullBarAndPercentageUnder = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%");
-                    break;
-                case BarArangement.BarAndPercentageUnderCentered:
-                    int fullBarAndPercentageUnderCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndPercentageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndPercentageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarAndPercentageInBar:
-                    int fullBarAndPercentageInBar = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndPercentageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndPercentageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarAndTitleFolowedByPercentage:
-                    int fullBarAndTitleFolowedByPercentage = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{title}{Math.Round(val * 100 / max, 2)}%");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleFolowedByPercentage - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleFolowedByPercentage - 1)}{border2}");
-                    break;
-                case BarArangement.BarAndTitleFolowedByPercentageCentered:
-                    int fullBarAndTitleFolowedByPercentageCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{title}{Math.Round(val * 100 / max, 2)}%", true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleFolowedByPercentageCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleFolowedByPercentageCentered - 1)}{border2}");
-                    break;
-                case BarArangement.BarAndTitleInBarAndPercentageUnder:
-                    int fullBarAndTitleInBarAndPercentageUnder = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleInBarAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleInBarAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, title, true);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%");
-                    break;
-                case BarArangement.BarAndTitleInBarAndPercentageUnderCentered:
-                    int fullBarAndTitleInBarAndPercentageUnderCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleInBarAndPercentageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleInBarAndPercentageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, title, true);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarAndTitleFolowedByPercentageInBar:
-                    int fullBarAndTitleFolowedByPercentageInBar = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleFolowedByPercentageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleFolowedByPercentageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, $"{title}{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                default:
-                    return;
-            }
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
+        /// <param name="arangement">how the progressBar is aranged and what components it countains</param>
+        /// <param name="style">How the ProgresBar Looks</param>
+        /// <param name="color">Determin the color of the progress bar components</param>
+        public static void ProgressBar (int line, double val, double max, string title, BarArangement arangement, BarLook style, BarColor color)
+        {
+            int fill = (int) Math.Round(val * ConsoleWidth / max);
+            double percentage = val * 100d / max;
+            ProgressBarPrinter(line, fill, percentage, title, arangement, style, color);
         }
 
         /// <summary>
@@ -498,103 +361,26 @@ namespace ConsoleUtilities
         /// <param name="style">How the ProgresBar Looks</param>
         public static void ProgressBar (int line, decimal val, decimal max, string title, BarArangement arangement, BarLook style)
         {
+            int fill = (int) Math.Round(val * ConsoleWidth / max);
+            double percentage = decimal.ToDouble(val * 100 / max);
+            ProgressBarPrinter(line, fill, percentage, title, arangement, style, new BarColor());
+        }
 
-            (char border1, char border2, char filling) = Conversions.GetCharsFromStyle(style);
-
-            switch (arangement)
-            {
-                case BarArangement.BarOnly:
-                    ProgressBar(line, val, max);
-                    break;
-                case BarArangement.BarWithTitle:
-                    ProgressBar(line, val, max, title);
-                    break;
-                case BarArangement.BarWithTitleCentered:
-                    int fullBarWithTitleCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCentered - 1)}{border2}");
-                    break;
-                case BarArangement.BarWithTitleAndPercentageUnder:
-                    int fullBarWithTitleAndPercentageUnder = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100 / max, 2)}%");
-                    break;
-                case BarArangement.BarWithTitleAndPercentageUnderCentered:
-                    int fullBarWithTitleAndPercentageUnderCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleAndPercentageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleAndPercentageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarWithTitleAndPercentageInBar:
-                    int fullBarWithTitleAndPercentageInBar = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleAndPercentageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleAndPercentageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line + 1, $"{Math.Round(val * 100 / max, 2)} %", true, false);
-                    break;
-                case BarArangement.BarWithTitleCenteredAndPercentageUnder:
-                    int fullBarWithTitleCenteredAndPercentageUnder = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCenteredAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCenteredAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100 / max, 2)}%");
-                    break;
-                case BarArangement.BarWithTitleCenteredAndPercantageUnderCentered:
-                    int fullBarWithTitleCenteredAndPercantageUnderCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCenteredAndPercantageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCenteredAndPercantageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarWithTitleCenteredAndPercantageInBar:
-                    int fullBarWithTitleCenteredAndPercantageInBar = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, title, true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarWithTitleCenteredAndPercantageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarWithTitleCenteredAndPercantageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarAndPercentageUnder:
-                    int fullBarAndPercentageUnder = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%");
-                    break;
-                case BarArangement.BarAndPercentageUnderCentered:
-                    int fullBarAndPercentageUnderCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndPercentageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndPercentageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarAndPercentageInBar:
-                    int fullBarAndPercentageInBar = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndPercentageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndPercentageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarAndTitleFolowedByPercentage:
-                    int fullBarAndTitleFolowedByPercentage = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{title}{Math.Round(val * 100 / max, 2)}%");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleFolowedByPercentage - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleFolowedByPercentage - 1)}{border2}");
-                    break;
-                case BarArangement.BarAndTitleFolowedByPercentageCentered:
-                    int fullBarAndTitleFolowedByPercentageCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{title}{Math.Round(val * 100 / max, 2)}%", true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleFolowedByPercentageCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleFolowedByPercentageCentered - 1)}{border2}");
-                    break;
-                case BarArangement.BarAndTitleInBarAndPercentageUnder:
-                    int fullBarAndTitleInBarAndPercentageUnder = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleInBarAndPercentageUnder - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleInBarAndPercentageUnder - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, title, true);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%");
-                    break;
-                case BarArangement.BarAndTitleInBarAndPercentageUnderCentered:
-                    int fullBarAndTitleInBarAndPercentageUnderCentered = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleInBarAndPercentageUnderCentered - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleInBarAndPercentageUnderCentered - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, title, true);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                case BarArangement.BarAndTitleFolowedByPercentageInBar:
-                    int fullBarAndTitleFolowedByPercentageInBar = (int) Math.Round(val * ConsoleWidth / max);
-                    ConsoleUtilities.ReplaceLine(line, $"{border1}{ConsoleUtilities.GetCharakters(fullBarAndTitleFolowedByPercentageInBar - 1, filling)}{ConsoleUtilities.GetSpaces(ConsoleWidth - fullBarAndTitleFolowedByPercentageInBar - 1)}{border2}");
-                    ConsoleUtilities.OverwriteLine(line, $"{title}{Math.Round(val * 100 / max, 2)}%", true, false);
-                    break;
-                default:
-                    return;
-            }
+        /// <summary>
+        /// Prints a Progress bar clculatet from val to max value percentage
+        /// </summary>
+        /// <param name="line">the console line to begin printing the ProgressBar</param>
+        /// <param name="val">the current value</param>
+        /// <param name="max">the max value</param>
+        /// <param name="title">the title of the ProgresBar</param>
+        /// <param name="arangement">how the progressBar is aranged and what components it countains</param>
+        /// <param name="style">How the ProgresBar Looks</param>
+        /// <param name="color">Determin the color of the progress bar components</param>
+        public static void ProgressBar (int line, decimal val, decimal max, string title, BarArangement arangement, BarLook style, BarColor color)
+        {
+            int fill = (int) Math.Round(val * ConsoleWidth / max);
+            double percentage = decimal.ToDouble(val * 100 / max);
+            ProgressBarPrinter(line, fill, percentage, title, arangement, style, color);
         }
 
         /// <summary>

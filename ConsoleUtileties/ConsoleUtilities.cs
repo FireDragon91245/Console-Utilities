@@ -130,6 +130,21 @@ namespace ConsoleUtilities
             Console.Write("\x1b[38;2;" + col.R + ";" + col.G + ";" + col.B + "m");
         }
 
+        internal static string GetForegroundColorString (Color col)
+        {
+            return "\x1b[38;2;" + col.R + ";" + col.G + ";" + col.B + "m";
+        }
+
+        internal static string GetBackgroundColorString (Color col)
+        {
+            return "\x1b[48;2;" + col.R + ";" + col.G + ";" + col.B + "m";
+        }
+
+        internal static string GetResetColorString()
+        {
+            return GetForegroundColorString(Color.LightGray) + GetBackgroundColorString(Color.FromArgb(13, 13, 13));
+        }
+
         /// <summary>
         /// Set a custom RGB color as console foreground color
         /// IMPORTANT: Only works on Windwos after Aneversary Update
