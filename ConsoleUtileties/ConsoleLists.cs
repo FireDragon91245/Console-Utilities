@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -11,6 +12,8 @@ namespace ConsoleUtilities
     /// </summary>
     public static class ConsoleLists
     {
+        private static string ColorResetString => ConsoleUtilities.colorResetString;
+
         private static int ConsoleWidth
         {
             get
@@ -67,7 +70,7 @@ namespace ConsoleUtilities
                 columnCharCount[0] += pair.Key.ToString().Length;
                 columnCharCount[1] += pair.Value.ToString().Length;
             }
-            int[] collSize = { columnCharCount[0] * (ConsoleWidth - 9) / (columnCharCount[0] + columnCharCount[1]), columnCharCount[1] * (ConsoleWidth - 9) / ( columnCharCount[0] + columnCharCount[1] ) };
+            int[] collSize = { columnCharCount[0] * ( ConsoleWidth - 9 ) / ( columnCharCount[0] + columnCharCount[1] ), columnCharCount[1] * ( ConsoleWidth - 9 ) / ( columnCharCount[0] + columnCharCount[1] ) };
             for (int i = 0 ; i < 2 ; i++)
             {
                 if (collSize[i] < 2)
@@ -160,7 +163,7 @@ namespace ConsoleUtilities
         public static void PrintSmartList<TKey, TValue> (int line, Dictionary<TKey, TValue> list, TableLook style, int minColumnWidth)
         {
             (char vertical, char horizontal, char crosing) = Conversions.GetCharForStyle(style);
-            if(minColumnWidth < 2)
+            if (minColumnWidth < 2)
                 minColumnWidth = 2;
             if (minColumnWidth > ( ConsoleWidth - 9 ) / 2)
                 minColumnWidth = ( ConsoleWidth - 9 ) / 2;
@@ -331,8 +334,8 @@ namespace ConsoleUtilities
             for (int i = 0 ; i < table.Columns.Count ; i++)
             {
                 seperationLine += ConsoleUtilities.GetCharakters(spacePerColumn + 2, '-') + "+";
-                if(printHeader)
-                headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, spacePerColumn);
+                if (printHeader)
+                    headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, spacePerColumn);
             }
             int index = line;
             if (printHeader)
@@ -457,7 +460,7 @@ namespace ConsoleUtilities
             {
                 seperationLine += ConsoleUtilities.GetCharakters(collSize[i] + 2, '-') + "+";
                 headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, collSize[i]);
-                if(headers[i].Count > longestHeader)
+                if (headers[i].Count > longestHeader)
                     longestHeader = headers[i].Count;
             }
             foreach (List<string> header in headers)
@@ -658,7 +661,7 @@ namespace ConsoleUtilities
         {
             if (table.Columns.Count == 0)
                 return;
-            if(minColumnWidth < 2)
+            if (minColumnWidth < 2)
                 minColumnWidth = 2;
             if (minColumnWidth > ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / table.Columns.Count)
                 minColumnWidth = ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / table.Columns.Count;
@@ -690,7 +693,7 @@ namespace ConsoleUtilities
                     }
                     else
                     {
-                        for (int j = table.Columns.Count - 2 ; j >= 0; j--)
+                        for (int j = table.Columns.Count - 2 ; j >= 0 ; j--)
                         {
                             if (collSize[j] > minColumnWidth)
                             {
@@ -769,6 +772,142 @@ namespace ConsoleUtilities
                             sb.Append($" {ConsoleUtilities.GetSpaces(collSize[j])} {vertical}");
                         }
                     }
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, sb.ToString());
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+            }
+        }
+
+        /// <summary>
+        /// Print a DataTable as List, colums get automaticly resized, size gets determined by amount of text in that column
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="table">The DataTable to print</param>
+        /// <param name="style">How the list looks</param>
+        /// <param name="minColumnWidth">The minimum with that a colum can reach during automatic resize, if to smal gets defaultet to 2 if to large it gets defaultet to ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / table.Columns.Count</param>
+        /// <param name="color">Determins the color of the list see <see cref="TableColor"/> propertys for details</param>
+        public static void PrintSmartList (int line, DataTable table, TableLook style, TableColor color, int minColumnWidth)
+        {
+            if (table.Columns.Count == 0)
+                return;
+            if (minColumnWidth < 2)
+                minColumnWidth = 2;
+            if (minColumnWidth > ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / table.Columns.Count)
+                minColumnWidth = ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / table.Columns.Count;
+            string borderColor = ConsoleUtilities.GetForegroundColorString(color.BorderForegroundColor) + ConsoleUtilities.GetBackgroundColorString(color.BorderBackgroundColor);
+            string[] columColors = Conversions.GetColumnColorStrings(color, table.Columns.Count);
+            string[] headerColors = Conversions.GetHeaderColorStrings(color, table.Columns.Count);
+            (char vertical, char horizontal, char crosing) = Conversions.GetCharForStyle(style);
+            int[] columnCharCount = new int[table.Columns.Count];
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    columnCharCount[i] += row[i].ToString().Length;
+                }
+                columnCharCount[i] += table.Columns[i].ColumnName.Length;
+            }
+            int charSum = columnCharCount.Sum();
+            int[] collSize = new int[table.Columns.Count];
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                collSize[i] = columnCharCount[i] * ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / charSum;
+            }
+            for (int i = 0 ; i < collSize.Length ; i++)
+            {
+                if (collSize[i] < minColumnWidth)
+                {
+                    int rest = minColumnWidth - collSize[i];
+                    collSize[i] = minColumnWidth;
+                    if (i < collSize.Length - 1)
+                    {
+                        collSize[i + 1] -= rest;
+                    }
+                    else
+                    {
+                        for (int j = table.Columns.Count - 2 ; j >= 0 ; j--)
+                        {
+                            if (collSize[j] > minColumnWidth)
+                            {
+                                collSize[j] -= rest;
+                                if (collSize[j] < minColumnWidth)
+                                {
+                                    rest = minColumnWidth - collSize[j];
+                                    continue;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            List<string>[] headers = new List<string>[table.Columns.Count];
+            string seperationLine = $" {borderColor}{crosing}";
+            int longestHeader = 0;
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                seperationLine += ConsoleUtilities.GetCharakters(collSize[i] + 2, horizontal) + crosing;
+                headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, collSize[i]);
+                if (headers[i].Count > longestHeader)
+                    longestHeader = headers[i].Count;
+            }
+            seperationLine += ColorResetString;
+            foreach (List<string> header in headers)
+            {
+                if (header.Count > longestHeader)
+                    longestHeader = header.Count;
+            }
+            int index = line;
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            for (int i = 0 ; i < longestHeader ; i++)
+            {
+                string s = $" {borderColor}{vertical}";
+                for (int j = 0 ; j < table.Columns.Count ; j++)
+                {
+                    if (i < headers[j].Count)
+                    {
+                        s += $" {headerColors[j]}{headers[j][i]}{ConsoleUtilities.GetSpaces(collSize[j] - headers[j][i].Length)} {borderColor}{vertical}";
+                    }
+                    else
+                    {
+                        s += $" {headerColors[j]}{ConsoleUtilities.GetSpaces(collSize[j])} {borderColor}{vertical}";
+                    }
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, s + ColorResetString);
+            }
+            index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            foreach (DataRow row in table.Rows)
+            {
+                List<string>[] vals = new List<string>[table.Columns.Count];
+                for (int i = 0 ; i < table.Columns.Count ; i++)
+                {
+                    vals[i] = Conversions.ChopValue(row[i].ToString(), collSize[i]);
+                }
+                int longest = 0;
+                foreach (List<string> val in vals)
+                {
+                    if (val.Count > longest)
+                        longest = val.Count;
+                }
+                for (int i = 0 ; i < longest ; i++)
+                {
+                    StringBuilder sb = new($" {borderColor}{vertical}");
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < vals[j].Count)
+                        {
+                            sb.Append($" {columColors[j]}{vals[j][i]}{ConsoleUtilities.GetSpaces(collSize[j] - vals[j][i].Length)} {borderColor}{vertical}");
+                        }
+                        else
+                        {
+                            sb.Append($" {columColors[j]}{ConsoleUtilities.GetSpaces(collSize[j])} {borderColor}{vertical}");
+                        }
+                    }
+                    sb.Append(ColorResetString);
                     index = ConsoleUtilities.NormalizeLineIndex(index + 1);
                     ConsoleUtilities.ReplaceLine(index, sb.ToString());
                 }
@@ -877,8 +1016,8 @@ namespace ConsoleUtilities
             for (int i = 0 ; i < table.Columns.Count ; i++)
             {
                 seperationLine += ConsoleUtilities.GetCharakters(spacePerColumn + 2, horizontal) + crosing;
-                if(printHeader)
-                headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, spacePerColumn);
+                if (printHeader)
+                    headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, spacePerColumn);
             }
             int index = line;
             if (printHeader)
@@ -945,6 +1084,185 @@ namespace ConsoleUtilities
         }
 
         /// <summary>
+        /// Prints a table not like a Table but each row like a list
+        /// </summary>
+        /// <param name="line">The line to start printing at</param>
+        /// <param name="table">The table thats printet</param>
+        /// <param name="style">How The list looks</param>
+        /// <param name="color">Determins the color of the list see <see cref="TableColor"/> propertys for details</param>
+        public static void PrintList (int line, DataTable table, TableLook style, TableColor color)
+        {
+            if (table.Columns.Count == 0)
+                return;
+            string borderColor = ConsoleUtilities.GetForegroundColorString(color.BorderForegroundColor) + ConsoleUtilities.GetBackgroundColorString(color.BorderBackgroundColor);
+            string[] columColors = Conversions.GetColumnColorStrings(color, table.Columns.Count);
+            string[] headerColors = Conversions.GetHeaderColorStrings(color, table.Columns.Count);
+            (char vertical, char horizontal, char crosing) = Conversions.GetCharForStyle(style);
+            int spacePerColumn = ( ConsoleWidth - ( table.Columns.Count * 3 + 2 ) ) / table.Columns.Count;
+            List<string>[] headers = new List<string>[table.Columns.Count];
+            int logestHeader = 0;
+            string seperationLine = $" {borderColor}{crosing}";
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                seperationLine += ConsoleUtilities.GetCharakters(spacePerColumn + 2, horizontal) + crosing;
+                headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, spacePerColumn);
+            }
+            seperationLine += ColorResetString;
+            foreach (List<string> header in headers)
+            {
+                if (header.Count > logestHeader)
+                    logestHeader = header.Count;
+            }
+            int index = line;
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            for (int i = 0 ; i < logestHeader ; i++)
+            {
+                string s = $" {borderColor}{vertical}";
+                for (int j = 0 ; j < table.Columns.Count ; j++)
+                {
+                    if (i < headers[j].Count)
+                    {
+                        s += $" {headerColors[j]}{headers[j][i]}{ConsoleUtilities.GetSpaces(spacePerColumn - headers[j][i].Length)} {borderColor}{vertical}";
+                    }
+                    else
+                    {
+                        s += $" {headerColors[j]}{ConsoleUtilities.GetSpaces(spacePerColumn)} {borderColor}{vertical}";
+                    }
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, s + ColorResetString);
+            }
+            index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            foreach (DataRow row in table.Rows)
+            {
+                List<string>[] vals = new List<string>[table.Columns.Count];
+                for (int i = 0 ; i < table.Columns.Count ; i++)
+                {
+                    vals[i] = Conversions.ChopValue(row[i].ToString(), spacePerColumn);
+                }
+                int longest = 0;
+                foreach (List<string> val in vals)
+                {
+                    if (val.Count > longest)
+                        longest = val.Count;
+                }
+                for (int i = 0 ; i < longest ; i++)
+                {
+                    StringBuilder sb = new($" {borderColor}{vertical}");
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < vals[j].Count)
+                        {
+                            sb.Append($" {columColors[j]}{vals[j][i]}{ConsoleUtilities.GetSpaces(spacePerColumn - vals[j][i].Length)} {borderColor}{vertical}");
+                        }
+                        else
+                        {
+                            sb.Append($" {columColors[j]}{ConsoleUtilities.GetSpaces(spacePerColumn)} {borderColor}{vertical}");
+                        }
+                    }
+                    sb.Append(ColorResetString);
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, sb.ToString());
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+            }
+        }
+
+        /// <summary>
+        /// Prints a table not like a Table but each row like a list
+        /// </summary>
+        /// <param name="line">The line to start printing at</param>
+        /// <param name="table">The table thats printet</param>
+        /// <param name="style">How The list looks</param>
+        /// <param name="printHeader">if true the headers of the table get printet</param>
+        /// <param name="color">Determins the color of the list see <see cref="TableColor"/> propertys for details</param>
+        public static void PrintList (int line, DataTable table, TableLook style, TableColor color, bool printHeader = true)
+        {
+            if (table.Columns.Count == 0)
+                return;
+            string borderColor = ConsoleUtilities.GetForegroundColorString(color.BorderForegroundColor) + ConsoleUtilities.GetBackgroundColorString(color.BorderBackgroundColor);
+            string[] columColors = Conversions.GetColumnColorStrings(color, table.Columns.Count);
+            string[] headerColors = printHeader ? Conversions.GetHeaderColorStrings(color, table.Columns.Count) : Array.Empty<string>();
+            (char vertical, char horizontal, char crosing) = Conversions.GetCharForStyle(style);
+            int spacePerColumn = ( ConsoleWidth - ( table.Columns.Count * 3 + 2 ) ) / table.Columns.Count;
+            List<string>[]? headers = printHeader ? new List<string>[table.Columns.Count] : null;
+            int logestHeader = 0;
+            string seperationLine = $" {borderColor}{crosing}";
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                seperationLine += ConsoleUtilities.GetCharakters(spacePerColumn + 2, horizontal) + crosing;
+                if (printHeader)
+                    headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, spacePerColumn);
+            }
+            seperationLine += ColorResetString;
+            int index = line;
+            if (printHeader)
+            {
+                foreach (List<string> header in headers)
+                {
+                    if (header.Count > logestHeader)
+                        logestHeader = header.Count;
+                }
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+                for (int i = 0 ; i < logestHeader ; i++)
+                {
+                    string s = $" {borderColor}{vertical}";
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < headers[j].Count)
+                        {
+                            s += $" {headerColors[j]}{headers[j][i]}{ConsoleUtilities.GetSpaces(spacePerColumn - headers[j][i].Length)} {borderColor}{vertical}";
+                        }
+                        else
+                        {
+                            s += $" {headerColors[j]}{ConsoleUtilities.GetSpaces(spacePerColumn)} {borderColor}{vertical}";
+                        }
+                    }
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, s + ColorResetString);
+                }
+            }
+            index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            foreach (DataRow row in table.Rows)
+            {
+                List<string>[] vals = new List<string>[table.Columns.Count];
+                for (int i = 0 ; i < table.Columns.Count ; i++)
+                {
+                    vals[i] = Conversions.ChopValue(row[i].ToString(), spacePerColumn);
+                }
+                int longest = 0;
+                foreach (List<string> val in vals)
+                {
+                    if (val.Count > longest)
+                        longest = val.Count;
+                }
+                for (int i = 0 ; i < longest ; i++)
+                {
+                    StringBuilder sb = new($" {borderColor}{vertical}");
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < vals[j].Count)
+                        {
+                            sb.Append($" {columColors[j]}{vals[j][i]}{ConsoleUtilities.GetSpaces(spacePerColumn - vals[j][i].Length)} {borderColor}{vertical}");
+                        }
+                        else
+                        {
+                            sb.Append($" {columColors[j]}{ConsoleUtilities.GetSpaces(spacePerColumn)} {borderColor}{vertical}");
+                        }
+                    }
+                    sb.Append(ColorResetString);
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, sb.ToString());
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+            }
+        }
+
+        /// <summary>
         /// Print a DataTable as List, colums get automaticly resized, size gets determined by amount of text in that column
         /// </summary>
         /// <param name="line">the line to start printing at</param>
@@ -964,8 +1282,8 @@ namespace ConsoleUtilities
                 {
                     columnCharCount[i] += row[i].ToString().Length;
                 }
-                if(printHeader)
-                columnCharCount[i] += table.Columns[i].ColumnName.Length;
+                if (printHeader)
+                    columnCharCount[i] += table.Columns[i].ColumnName.Length;
             }
             int charSum = columnCharCount.Sum();
             int[] collSize = new int[table.Columns.Count];
@@ -1102,8 +1420,8 @@ namespace ConsoleUtilities
                 {
                     columnCharCount[i] += row[i].ToString().Length;
                 }
-                if(printHeader)
-                columnCharCount[i] += table.Columns[i].ColumnName.Length;
+                if (printHeader)
+                    columnCharCount[i] += table.Columns[i].ColumnName.Length;
             }
             int charSum = columnCharCount.Sum();
             int[] collSize = new int[table.Columns.Count];
@@ -1221,6 +1539,150 @@ namespace ConsoleUtilities
         /// </summary>
         /// <param name="line">the line to start printing at</param>
         /// <param name="table">The DataTable to print</param>
+        /// <param name="style">How the list looks</param>
+        /// <param name="minColumnWidth">The minimum with that a colum can reach during automatic resize, if to smal gets defaultet to 2 if to large it gets defaultet to ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / table.Columns.Count</param>
+        /// <param name="printHeader">if true the headers of the table get printet</param>
+        /// <param name="color">Determins the color of the list see <see cref="TableColor"/> propertys for details</param>
+        public static void PrintSmartList (int line, DataTable table, TableLook style, TableColor color, int minColumnWidth, bool printHeader = true)
+        {
+            if (table.Columns.Count == 0)
+                return;
+            if (minColumnWidth < 2)
+                minColumnWidth = 2;
+            if (minColumnWidth > ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / table.Columns.Count)
+                minColumnWidth = ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / table.Columns.Count;
+            string borderColor = ConsoleUtilities.GetForegroundColorString(color.BorderForegroundColor) + ConsoleUtilities.GetBackgroundColorString(color.BorderBackgroundColor);
+            string[] columColors = Conversions.GetColumnColorStrings(color, table.Columns.Count);
+            string[] headerColors = printHeader ? Conversions.GetHeaderColorStrings(color, table.Columns.Count) : Array.Empty<string>();
+            (char vertical, char horizontal, char crosing) = Conversions.GetCharForStyle(style);
+            int[] columnCharCount = new int[table.Columns.Count];
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    columnCharCount[i] += row[i].ToString().Length;
+                }
+                if (printHeader)
+                    columnCharCount[i] += table.Columns[i].ColumnName.Length;
+            }
+            int charSum = columnCharCount.Sum();
+            int[] collSize = new int[table.Columns.Count];
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                collSize[i] = columnCharCount[i] * ( ConsoleWidth - 3 - table.Columns.Count * 3 ) / charSum;
+            }
+            for (int i = 0 ; i < collSize.Length ; i++)
+            {
+                if (collSize[i] < minColumnWidth)
+                {
+                    int rest = minColumnWidth - collSize[i];
+                    collSize[i] = minColumnWidth;
+                    if (i < collSize.Length - 1)
+                    {
+                        collSize[i + 1] -= rest;
+                    }
+                    else
+                    {
+                        for (int j = table.Columns.Count - 2 ; j >= 0 ; j--)
+                        {
+                            if (collSize[j] > minColumnWidth)
+                            {
+                                collSize[j] -= rest;
+                                if (collSize[j] < minColumnWidth)
+                                {
+                                    rest = minColumnWidth - collSize[j];
+                                    continue;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            List<string>[]? headers = printHeader ? new List<string>[table.Columns.Count] : null;
+            string seperationLine = $" {borderColor}{crosing}";
+            int longestHeader = 0;
+            for (int i = 0 ; i < table.Columns.Count ; i++)
+            {
+                seperationLine += ConsoleUtilities.GetCharakters(collSize[i] + 2, horizontal) + crosing;
+                if (printHeader)
+                {
+                    headers[i] = Conversions.ChopValue(table.Columns[i].ColumnName, collSize[i]);
+                    if (headers[i].Count > longestHeader)
+                        longestHeader = headers[i].Count;
+                }
+            }
+            seperationLine += ColorResetString;
+            int index = line;
+            if (printHeader)
+            {
+                foreach (List<string> header in headers)
+                {
+                    if (header.Count > longestHeader)
+                        longestHeader = header.Count;
+                }
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+                for (int i = 0 ; i < longestHeader ; i++)
+                {
+                    string s = $" {borderColor}{vertical}";
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < headers[j].Count)
+                        {
+                            s += $" {headerColors[j]}{headers[j][i]}{ConsoleUtilities.GetSpaces(collSize[j] - headers[j][i].Length)} {borderColor}{vertical}";
+                        }
+                        else
+                        {
+                            s += $" {headerColors[j]}{ConsoleUtilities.GetSpaces(collSize[j])} {borderColor}{vertical}";
+                        }
+                    }
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, s + ColorResetString);
+                }
+            }
+            index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+            ConsoleUtilities.ReplaceLine(index, seperationLine);
+            foreach (DataRow row in table.Rows)
+            {
+                List<string>[] vals = new List<string>[table.Columns.Count];
+                for (int i = 0 ; i < table.Columns.Count ; i++)
+                {
+                    vals[i] = Conversions.ChopValue(row[i].ToString(), collSize[i]);
+                }
+                int longest = 0;
+                foreach (List<string> val in vals)
+                {
+                    if (val.Count > longest)
+                        longest = val.Count;
+                }
+                for (int i = 0 ; i < longest ; i++)
+                {
+                    StringBuilder sb = new($" {borderColor}{vertical}");
+                    for (int j = 0 ; j < table.Columns.Count ; j++)
+                    {
+                        if (i < vals[j].Count)
+                        {
+                            sb.Append($" {columColors[j]}{vals[j][i]}{ConsoleUtilities.GetSpaces(collSize[j] - vals[j][i].Length)} {borderColor}{vertical}");
+                        }
+                        else
+                        {
+                            sb.Append($" {columColors[j]}{ConsoleUtilities.GetSpaces(collSize[j])} {borderColor}{vertical}");
+                        }
+                    }
+                    sb.Append(ColorResetString);
+                    index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                    ConsoleUtilities.ReplaceLine(index, sb.ToString());
+                }
+                index = ConsoleUtilities.NormalizeLineIndex(index + 1);
+                ConsoleUtilities.ReplaceLine(index, seperationLine);
+            }
+        }
+
+        /// <summary>
+        /// Print a DataTable as List, colums get automaticly resized, size gets determined by amount of text in that column
+        /// </summary>
+        /// <param name="line">the line to start printing at</param>
+        /// <param name="table">The DataTable to print</param>
         /// <param name="printHeader">if true the headers of the table get printet</param>
         public static void PrintSmartList (int line, DataTable table, bool printHeader = true)
         {
@@ -1233,8 +1695,8 @@ namespace ConsoleUtilities
                 {
                     columnCharCount[i] += row[i].ToString().Length;
                 }
-                if(printHeader)
-                columnCharCount[i] += table.Columns[i].ColumnName.Length;
+                if (printHeader)
+                    columnCharCount[i] += table.Columns[i].ColumnName.Length;
             }
             int charSum = columnCharCount.Sum();
             int[] collSize = new int[table.Columns.Count];
@@ -1412,6 +1874,30 @@ namespace ConsoleUtilities
 
                 foundIndex = -1;
                 return false;
+            }
+
+            internal static string[] GetHeaderColorStrings (TableColor color, int count)
+            {
+                string[] res = new string[count];
+                for (int i = 0 ; i < count ; i++)
+                {
+                    res[i] =
+                        ConsoleUtilities.GetForegroundColorString(( i < color.headerForegroundColors.Length ? color.headerForegroundColors[i] : Color.LightGray )) +
+                        ConsoleUtilities.GetBackgroundColorString(( i < color.headerBackgroundColors.Length ? color.headerBackgroundColors[i] : ConsoleUtilities.consoleBlack ));
+                }
+                return res;
+            }
+
+            internal static string[] GetColumnColorStrings (TableColor color, int columns)
+            {
+                string[] res = new string[columns];
+                for (int i = 0 ; i < columns ; i++)
+                {
+                    res[i] =
+                        ConsoleUtilities.GetForegroundColorString(( i < color.columnForegroundColors.Length ? color.columnForegroundColors[i] : Color.LightGray )) +
+                        ConsoleUtilities.GetBackgroundColorString(( i < color.columnBackgroundColors.Length ? color.columnBackgroundColors[i] : ConsoleUtilities.consoleBlack ));
+                }
+                return res;
             }
         }
     }

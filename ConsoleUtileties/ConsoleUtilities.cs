@@ -9,6 +9,8 @@ namespace ConsoleUtilities
     {
         public static readonly Color consoleBlack = Color.FromArgb(13, 13, 13);
 
+        public static readonly string colorResetString = GetForegroundColorString(Color.LightGray) + GetBackgroundColorString(consoleBlack);
+
         private static string EmptyLine_
         {
             get;

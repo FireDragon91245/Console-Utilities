@@ -13,7 +13,7 @@ namespace ConsoleUtilities
     /// </summary>
     public static class ConsoleTables
     {
-        private static readonly string colorResetString = ConsoleUtilities.GetForegroundColorString(Color.LightGray) + ConsoleUtilities.GetBackgroundColorString(Color.FromArgb(13, 13, 13));
+        private static string ColorResetString => ConsoleUtilities.colorResetString;
         private static int ConsoleWidth
         {
             get
@@ -329,7 +329,7 @@ namespace ConsoleUtilities
             {
                 sbHeader.Append($" {ConsoleUtilities.GetForegroundColorString(((i >= color.headerForegroundColors.Length) ? Color.LightGray : color.headerForegroundColors[i]))}{ConsoleUtilities.GetBackgroundColorString(( ( i >= color.headerBackgroundColors.Length ) ? ConsoleUtilities.consoleBlack : color.headerBackgroundColors[i] ))}{table.Columns[i].ColumnName}{ConsoleUtilities.GetSpaces(longest[i] - table.Columns[i].ColumnName.Length)} {borderColor}{vertikal}");
             }
-            sbHeader.Append(colorResetString);
+            sbHeader.Append(ColorResetString);
             ConsoleUtilities.ReplaceLine(line, sbHeader.ToString());
 
             StringBuilder sbBorder = new($" {borderColor}{crossing}");
@@ -337,7 +337,7 @@ namespace ConsoleUtilities
             {
                 sbBorder.Append($"{ConsoleUtilities.GetCharakters(longest[i] + 2, horizontal)}{crossing}");
             }
-            sbBorder.Append(colorResetString);
+            sbBorder.Append(ColorResetString);
             ConsoleUtilities.ReplaceLine(line + 1, sbBorder.ToString());
 
             int currentRow = -1;
@@ -350,7 +350,7 @@ namespace ConsoleUtilities
                 {
                     sbRows.Append($" {columnColors[j]}{r[j]}{ConsoleUtilities.GetSpaces(longest[j] - r[j].ToString().Length)} {borderColor}{vertikal}");
                 }
-                sbRows.Append(colorResetString);
+                sbRows.Append(ColorResetString);
                 ConsoleUtilities.ReplaceLine(line + currentRow + 2, sbRows.ToString());
             }
         }
@@ -374,9 +374,9 @@ namespace ConsoleUtilities
             string borderColor = ConsoleUtilities.GetForegroundColorString(color.BorderForegroundColor) + ConsoleUtilities.GetBackgroundColorString(color.BorderBackgroundColor);
             string[] columnColors = Conversions.GetColumnColorStrings(color, table.Columns.Count);
             string[] headerColors = Conversions.GetHeaderColorStrings(color, table.Columns.Count);
-            int headerColorStringLength = borderColor.Length + headerColors.Select((s, res) => {return s.Length;}).Sum() + borderColor.Length * table.Columns.Count + colorResetString.Length;
-            int borderColorStringLength = borderColor.Length + colorResetString.Length;
-            int rowColorStringLength = borderColor.Length + columnColors.Select((s, res) => { return s.Length; }).Sum() + borderColor.Length * table.Columns.Count + colorResetString.Length;
+            int headerColorStringLength = borderColor.Length + headerColors.Select((s, res) => {return s.Length;}).Sum() + borderColor.Length * table.Columns.Count + ColorResetString.Length;
+            int borderColorStringLength = borderColor.Length + ColorResetString.Length;
+            int rowColorStringLength = borderColor.Length + columnColors.Select((s, res) => { return s.Length; }).Sum() + borderColor.Length * table.Columns.Count + ColorResetString.Length;
             (char vertikal, char horizontal, char crossing) = look switch
             {
                 TableLook.Default => ('|', '-', '+'),
@@ -405,7 +405,7 @@ namespace ConsoleUtilities
             {
                 sbHeader.Append($" {headerColors[i]}{table.Columns[i].ColumnName}{ConsoleUtilities.GetSpaces(longest[i] - table.Columns[i].ColumnName.Length)} {borderColor}{vertikal}");
             }
-            sbHeader.Append(colorResetString);
+            sbHeader.Append(ColorResetString);
             ConsoleUtilities.ReplaceLine(line, sbHeader.ToString());
             if (sbHeader.Length - headerColorStringLength > ConsoleWidth)
             {
@@ -418,7 +418,7 @@ namespace ConsoleUtilities
             {
                 sbBorder.Append($"{ConsoleUtilities.GetCharakters(longest[i] + 2, horizontal)}{crossing}");
             }
-            sbBorder.Append(colorResetString);
+            sbBorder.Append(ColorResetString);
             ConsoleUtilities.ReplaceLine(line + 1, sbBorder.ToString());
             if (sbBorder.Length - borderColorStringLength > ConsoleWidth)
             {
@@ -436,7 +436,7 @@ namespace ConsoleUtilities
                 {
                     sbRows.Append($" {columnColors[j]}{r[j]}{ConsoleUtilities.GetSpaces(longest[j] - r[j].ToString().Length)} {borderColor}{vertikal}");
                 }
-                sbRows.Append(colorResetString);
+                sbRows.Append(ColorResetString);
                 ConsoleUtilities.ReplaceLine(line + currentRow + 1, sbRows.ToString());
                 if (sbRows.Length - rowColorStringLength > ConsoleWidth)
                 {
