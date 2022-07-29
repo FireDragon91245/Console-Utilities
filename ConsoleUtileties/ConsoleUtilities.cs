@@ -7,6 +7,8 @@ namespace ConsoleUtilities
 
     public static class ConsoleUtilities
     {
+        public static readonly Color consoleBlack = Color.FromArgb(13, 13, 13);
+
         private static string EmptyLine_
         {
             get;

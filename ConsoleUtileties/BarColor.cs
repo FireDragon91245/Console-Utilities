@@ -9,56 +9,88 @@ namespace ConsoleUtilities
 {
     public struct BarColor
     {
+        /// <summary>
+        /// Color of Bar Title
+        /// Default: <see cref="Color.LightGray"/>
+        /// </summary>
         public Color TitleForegroundColor
         {
             get;
             set;
         } = Color.LightGray;
 
+        /// <summary>
+        /// Color of the Percentage Number
+        /// Default: <see cref="Color.LightGray"/>
+        /// </summary>
         public Color PercentageForegroundColor
         {
             get;
             set;
         } = Color.LightGray;
 
+        /// <summary>
+        /// Color of the Prentecies encasing the Bar
+        /// Default: <see cref="Color.LightGray"/>
+        /// </summary>
         public Color BarCasingForegroundColor
         {
             get;
             set;
         } = Color.LightGray;
 
+        /// <summary>
+        /// Color of the lines marking the progress
+        /// Default: <see cref="Color.LightGray"/>
+        /// </summary>
         public Color BarProgressForegroundColor
         {
             get;
             set;
         } = Color.LightGray;
 
+        /// <summary>
+        /// Background color of the title
+        /// Default: <see cref="ConsoleUtilities.consoleBlack"/>
+        /// </summary>
         public Color TitleBackgroundColor
         {
             get;
             set;
-        } = Color.FromArgb(13, 13, 13);
+        } = ConsoleUtilities.consoleBlack;
 
+        /// <summary>
+        /// Background color of the percentage
+        /// Default: <see cref="ConsoleUtilities.consoleBlack"/>
+        /// </summary>
         public Color PercentageBackgroundColor
         {
             get;
             set;
-        } = Color.FromArgb(13, 13, 13);
+        } = ConsoleUtilities.consoleBlack;
 
+        /// <summary>
+        /// Background color of the brackets encasing the ProgressBar
+        /// Default: <see cref="ConsoleUtilities.consoleBlack"/>
+        /// </summary>
         public Color BarCasingBackgroundColor
         {
             get;
             set;
-        } = Color.FromArgb(13, 13, 13);
+        } = ConsoleUtilities.consoleBlack;
 
+        /// <summary>
+        /// Background color of the lines indicating the progress
+        /// Default: <see cref="ConsoleUtilities.consoleBlack"/>
+        /// </summary>
         public Color BarProgressBackgroundColor
         {
             get;
             set;
-        } = Color.FromArgb(13, 13, 13);
+        } = ConsoleUtilities.consoleBlack;
 
         /// <summary>
-        /// Default Construktor by default all colors will be gray
+        /// Default Construktor by default all colors will be <see cref="Color.LightGray"/>
         /// </summary>
         public BarColor ()
         {

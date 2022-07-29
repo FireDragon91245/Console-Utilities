@@ -231,6 +231,7 @@ namespace ConsoleUtilities
             if (progress > 1 && progress < ConsoleWidth - 1)
             {
                 avaidableConsoleWidth = ConsoleWidth - 2;
+                progress -= 1;
             }
             else if (progress < 3)
             {
