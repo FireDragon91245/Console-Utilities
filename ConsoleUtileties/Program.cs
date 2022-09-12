@@ -16,7 +16,7 @@ namespace ConsoleUtilitiesLibary
         {
             /* 
              * This class is just for debuging and testing becourse you dont need a Programm Class or Main Function
-             * in asemblys!!!
+             * in asemblys 
              */
             TableColor color = new TableColor(){
                 BorderForegroundColor = Color.Purple,
