@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace ConsoleUtilities
+namespace ConsoleUtilitiesLibary
 {
     /// <summary>
     /// Class to customize The Console like Disabling the red X

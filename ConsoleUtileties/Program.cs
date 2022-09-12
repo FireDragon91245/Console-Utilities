@@ -7,7 +7,7 @@ using System.Threading;
 using System.Reflection;
 using System.Drawing;
 
-namespace ConsoleUtilities
+namespace ConsoleUtilitiesLibary
 {
 
     public class Program
@@ -18,6 +18,18 @@ namespace ConsoleUtilities
              * This class is just for debuging and testing becourse you dont need a Programm Class or Main Function
              * in asemblys!!!
              */
+            TableColor color = new TableColor(){
+                BorderForegroundColor = Color.Purple,
+                columnForegroundColors = new Color[] { Color.Red, Color.Green }
+            };
+            DataTable table = new DataTable();
+            table.Columns.Add("Name", typeof(string));
+            table.Columns.Add("ID", typeof(int));
+            for (int i = 0 ; i < 100 ; i++)
+            {
+                table.Rows.Add(new object[] { ConsoleUtilities.GetCharakters(i, 'a'), i });
+            }
+            ConsoleLists.PrintSmartList(1, table, TableLook.DoubleLines, color, 5, false);
             return;
         }
     }

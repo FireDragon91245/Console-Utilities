@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace ConsoleUtilities
+namespace ConsoleUtilitiesLibary
 {
     /// <summary>
     /// Print Tables nicly Formatet
@@ -708,7 +708,7 @@ namespace ConsoleUtilities
             PrintTable(line, Conversions.DictionaryToDataTable(dictionary, "Key", "Value"), look, cutTableAtLineEnd);
         }
 
-        [Obsolete("Use PrintTable(List<T>) or PrintTable(LinkedList<T>) instead if you can avoid ArrayList!")]
+
         /// <summary>
         /// Print a Table Nicly Formatet,
         /// Can course visual bugs in console on extreme large Tables
@@ -718,12 +718,12 @@ namespace ConsoleUtilities
         /// <param name="line">The console line the table is startet printing at</param>
         /// <param name="list">ArrayList representing all rows</param>
         /// <param name="name">acting as the colum header name for all row</param>
+        [Obsolete("Use PrintTable(List<T>) or PrintTable(LinkedList<T>) instead if you can avoid ArrayList!")]
         public static void PrintTable (int line, ArrayList list, string name)
         {
             PrintTable(line, Conversions.ArrayListToDataTable(list, name));
         }
 
-        [Obsolete("Use PrintTable(List<T>) or PrintTable(LinkedList<T>) instead if you can avoid ArrayList!")]
         /// <summary>
         /// Print a Table Nicly Formatet,
         /// Can course visual bugs in console on extreme large Tables
@@ -734,12 +734,12 @@ namespace ConsoleUtilities
         /// <param name="list">ArrayList representing all rows</param>
         /// <param name="name">acting as the colum header name for all row</param>
         /// <param name="cutTableAtLineEnd">If true and the table is longer then the console the 3 last characters get replaced with points</param>
+        [Obsolete("Use PrintTable(List<T>) or PrintTable(LinkedList<T>) instead if you can avoid ArrayList!")]
         public static void PrintTable (int line, ArrayList list, string name, bool cutTableAtLineEnd = false)
         {
             PrintTable(line, Conversions.ArrayListToDataTable(list, name), cutTableAtLineEnd);
         }
 
-        [Obsolete("Use PrintTable(List<T>) or PrintTable(LinkedList<T>) instead if you can avoid ArrayList!")]
         /// <summary>
         /// Print a Table Nicly Formatet,
         /// Can course visual bugs in console on extreme large Tables
@@ -750,12 +750,12 @@ namespace ConsoleUtilities
         /// <param name="list">ArrayList representing all rows</param>
         /// <param name="name">acting as the colum header name for all row</param>
         /// <param name="look">The look of the table printet</param>
+        [Obsolete("Use PrintTable(List<T>) or PrintTable(LinkedList<T>) instead if you can avoid ArrayList!")]
         public static void PrintTable (int line, ArrayList list, string name, TableLook look)
         {
             PrintTable(line, Conversions.ArrayListToDataTable(list, name), look);
         }
 
-        [Obsolete("Use PrintTable(List<T>) or PrintTable(LinkedList<T>) instead if you can avoid ArrayList!")]
         /// <summary>
         /// Print a Table Nicly Formatet,
         /// Can course visual bugs in console on extreme large Tables
@@ -767,6 +767,7 @@ namespace ConsoleUtilities
         /// <param name="name">acting as the colum header name for all row</param>
         /// <param name="look">The look of the table printet</param>
         /// <param name="cutTableAtLineEnd">If true and the table is longer then the console the 3 last characters get replaced with points</param>
+        [Obsolete("Use PrintTable(List<T>) or PrintTable(LinkedList<T>) instead if you can avoid ArrayList!")]
         public static void PrintTable (int line, ArrayList list, string name, TableLook look, bool cutTableAtLineEnd = false)
         {
             PrintTable(line, Conversions.ArrayListToDataTable(list, name), look, cutTableAtLineEnd);
@@ -889,13 +890,13 @@ namespace ConsoleUtilities
                 return table;
             }
 
-            [Obsolete("Use ArrayList<T> or List<T> instead of ArrayList if you can!")]
             /// <summary>
             /// Convert ArrayList to DataTable
             /// </summary>
             /// <param name="arrayList">The arraylist acting as all rows</param>
             /// <param name="name">Name of the collumn countaining the rows</param>
             /// <returns>DataTable with 1 column countaining all elements fom ArrayList</returns>
+            [Obsolete("Use ArrayList<T> or List<T> instead of ArrayList if you can!")]
             public static DataTable ArrayListToDataTable (ArrayList arrayList, string name)
             {
                 DataTable table = new();
@@ -908,7 +909,7 @@ namespace ConsoleUtilities
             }
 
             /// <summary>
-            /// Converts List<<typeparamref name="T"/>> to DataTable 
+            /// Converts List to DataTable
             /// </summary>
             /// <typeparam name="T">List Type</typeparam>
             /// <param name="list">List acting as all rows</param>
@@ -962,10 +963,12 @@ namespace ConsoleUtilities
     /// </summary>
     public enum TableLook
     {
+#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
         Default,
         Lines,
         HashTag,
         Solid,
         DoubleLines
+#pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
     }
 }

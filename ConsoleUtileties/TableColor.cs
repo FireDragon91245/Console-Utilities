@@ -5,8 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleUtilities
+namespace ConsoleUtilitiesLibary
 {
+    /// <summary>
+    /// Color config for all tables and lists
+    /// </summary>
     public struct TableColor
     {
         /// <summary>

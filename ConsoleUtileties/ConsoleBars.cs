@@ -1,11 +1,14 @@
 ﻿using System;
 
-namespace ConsoleUtilities
+namespace ConsoleUtilitiesLibary
 {
 
-    public static class ConsoleBars
+    /// <summary>
+    /// Pint Progress bars to  the console
+    /// </summary>
+    public sealed class ConsoleBars
     {
-        private static readonly string resetColorString = ConsoleUtilities.GetResetColorString();
+        private static string ResetColorString => ConsoleUtilities.colorResetString;
         private static readonly BarColor defaultColor = new();
 
         private static int ConsoleWidth
@@ -245,41 +248,41 @@ namespace ConsoleUtilities
             switch (arangement)
             {
                 case BarArangement.BarOnly:
-                    ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}{resetColorString}");
+                    ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}{ResetColorString}");
                     break;
                 case BarArangement.BarWithTitle:
                     ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}", false, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}{resetColorString}");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}{ResetColorString}");
                     break;
                 case BarArangement.BarWithTitleCentered:
                     Console.Write(titleColor.ToString());
                     ConsoleUtilities.ReplaceLine(line, $"{title}", true, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}{resetColorString}");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}{ResetColorString}");
                     break;
                 case BarArangement.BarWithTitleAndPercentageUnder:
                     ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}");
                     ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}");
+                    ConsoleUtilities.ReplaceLine(line + 2, $"{percentageColor}{Math.Round(percentage, 2)}%{ResetColorString}");
                     break;
                 case BarArangement.BarWithTitleAndPercentageUnderCentered:
                     ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}");
                     ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}");
                     Console.Write(percentageColor.ToString());
                     ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(percentage, 2)}%", true, false);
-                    Console.Write(resetColorString);
+                    Console.Write(ResetColorString);
                     break;
                 case BarArangement.BarWithTitleAndPercentageInBar:
                     ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}");
                     ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}");
                     Console.Write(percentageColor.ToString());
                     ConsoleUtilities.OverwriteLine(line + 1, $"{Math.Round(percentage, 2)}%", true, false);
-                    Console.Write(resetColorString);
+                    Console.Write(ResetColorString);
                     break;
                 case BarArangement.BarWithTitleCenteredAndPercentageUnder:
                     Console.Write(titleColor.ToString());
                     ConsoleUtilities.ReplaceLine(line, title, true, false);
                     ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 2, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}");
+                    ConsoleUtilities.ReplaceLine(line + 2, $"{percentageColor}{Math.Round(percentage, 2)}%{ResetColorString}");
                     break;
                 case BarArangement.BarWithTitleCenteredAndPercantageUnderCentered:
                     Console.Write(titleColor.ToString());
@@ -287,7 +290,7 @@ namespace ConsoleUtilities
                     ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}");
                     Console.Write(percentageColor.ToString());
                     ConsoleUtilities.ReplaceLine(line + 2, $"{Math.Round(percentage, 2)}%", true, false);
-                    Console.Write(resetColorString);
+                    Console.Write(ResetColorString);
                     break;
                 case BarArangement.BarWithTitleCenteredAndPercantageInBar:
                     Console.Write(titleColor.ToString());
@@ -295,39 +298,39 @@ namespace ConsoleUtilities
                     ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}");
                     Console.Write(percentageColor.ToString());
                     ConsoleUtilities.OverwriteLine(line + 1, $"{Math.Round(percentage, 2)}%", true, false);
-                    Console.Write(resetColorString);
+                    Console.Write(ResetColorString);
                     break;
                 case BarArangement.BarAndPercentageUnder:
                     ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{percentageColor}{Math.Round(percentage, 2)}%{ResetColorString}");
                     break;
                 case BarArangement.BarAndPercentageUnderCentered:
                     ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}");
                     Console.Write(percentageColor.ToString());
                     ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(percentage, 2)}%", true, false);
-                    Console.Write(resetColorString);
+                    Console.Write(ResetColorString);
                     break;
                 case BarArangement.BarAndPercentageInBar:
                     ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}");
                     Console.Write(percentageColor.ToString());
                     ConsoleUtilities.OverwriteLine(line, $"{Math.Round(percentage, 2)}%", true, false);
-                    Console.Write(resetColorString);
+                    Console.Write(ResetColorString);
                     break;
                 case BarArangement.BarAndTitleFolowedByPercentage:
                     ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}{percentageColor}{Math.Round(percentage, 2)}%");
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}{resetColorString}");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}{ResetColorString}");
                     break;
                 case BarArangement.BarAndTitleFolowedByPercentageCentered:
                     string raw = $"{title}{Math.Round(percentage, 2)}%";
                     string centered = titleColor.ToString() + ConsoleUtilities.CenterString(raw).Insert(ConsoleUtilities.GetCenterOfString(raw) + title.Length, percentageColor.ToString());
                     ConsoleUtilities.ReplaceLine(line, centered, false, false);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}{resetColorString}");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}{ResetColorString}");
                     break;
                 case BarArangement.BarAndTitleInBarAndPercentageUnder:
                     ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}");
                     Console.Write(titleColor.ToString());
                     ConsoleUtilities.OverwriteLine(line, $"{title}", true);
-                    ConsoleUtilities.ReplaceLine(line + 1, $"{percentageColor}{Math.Round(percentage, 2)}%{resetColorString}");
+                    ConsoleUtilities.ReplaceLine(line + 1, $"{percentageColor}{Math.Round(percentage, 2)}%{ResetColorString}");
                     break;
                 case BarArangement.BarAndTitleInBarAndPercentageUnderCentered:
                     ConsoleUtilities.ReplaceLine(line, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}");
@@ -335,14 +338,14 @@ namespace ConsoleUtilities
                     ConsoleUtilities.OverwriteLine(line, $"{title}", true);
                     Console.Write(percentageColor.ToString());
                     ConsoleUtilities.ReplaceLine(line + 1, $"{Math.Round(percentage, 2)}%", true, false);
-                    Console.Write(resetColorString);
+                    Console.Write(ResetColorString);
                     break;
                 case BarArangement.BarAndTitleFolowedByPercentageInBar:
                     ConsoleUtilities.ReplaceLine(line, $"{titleColor}{title}");
                     ConsoleUtilities.ReplaceLine(line + 1, $"{borderColor}{border1}{progressColor}{ConsoleUtilities.GetCharakters(progress, filling)}{ConsoleUtilities.GetSpaces(avaidableConsoleWidth - progress)}{borderColor}{border2}");
                     Console.WriteLine(percentageColor.ToString());
                     ConsoleUtilities.OverwriteLine(line + 1, $"{Math.Round(percentage, 2)}%", true, false);
-                    Console.Write(resetColorString);
+                    Console.Write(ResetColorString);
                     break;
                 default:
                     return;
@@ -856,8 +859,12 @@ namespace ConsoleUtilities
         }
     }
 
+    /// <summary>
+    /// Where the diferent components of the progress bar are locatet
+    /// </summary>
     public enum BarArangement
     {
+#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
         BarOnly,
         BarWithTitle,
         BarWithTitleCentered,
@@ -875,10 +882,15 @@ namespace ConsoleUtilities
         BarAndTitleInBarAndPercentageUnder,
         BarAndTitleInBarAndPercentageUnderCentered,
         BarAndTitleFolowedByPercentageInBar
+#pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
     }
 
+    /// <summary>
+    /// What characters are used to display the bar
+    /// </summary>
     public enum BarLook
     {
+#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
         Default,
         SquareBracketsBorder,
         AngleBracketsBorder,
@@ -915,5 +927,6 @@ namespace ConsoleUtilities
         NoBorderAndStarFilling,
         NoBorderAndHashTagFilling,
         NoBorderAndLineFilling
+#pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
     }
 }

@@ -2,13 +2,22 @@
 using System.Drawing;
 using System.Text;
 
-namespace ConsoleUtilities
+namespace ConsoleUtilitiesLibary
 {
 
-    public static class ConsoleUtilities
+    /// <summary>
+    /// Utilety class with some usfull tols when working in a console application
+    /// </summary>
+    public sealed class ConsoleUtilities
     {
+        /// <summary>
+        /// The <see cref="ConsoleColor.Black"/> as RGB color
+        /// </summary>
         public static readonly Color consoleBlack = Color.FromArgb(13, 13, 13);
 
+        /// <summary>
+        /// a string that resets the color when printet to the console only if RGB mode is active see <see cref="ConsoleOptions.EnableRGBConsoleMode"/> and <seealso cref="ConsoleOptions.IsRGBModeEnabled"/>
+        /// </summary>
         public static readonly string colorResetString = GetForegroundColorString(Color.LightGray) + GetBackgroundColorString(consoleBlack);
 
         private static string EmptyLine_
@@ -53,12 +62,12 @@ namespace ConsoleUtilities
             }
         }
 
-        [Obsolete("Use ReplaceLine(int, string) instead if you can becourse invoking methods is slow!")]
         /// <summary>
         /// Replace a Line with a String
         /// </summary>
         /// <param name="line">The line replaced</param>
         /// <param name="p">Function that results the String</param>
+        [Obsolete("Use ReplaceLine(int, string) instead if you can becourse invoking methods is slow!")]
         public static void ReplaceLine (int line, Func<string> p)
         {
             ReplaceLine(line, p.Invoke());
@@ -144,9 +153,32 @@ namespace ConsoleUtilities
             return "\x1b[48;2;" + col.R + ";" + col.G + ";" + col.B + "m";
         }
 
-        internal static string GetResetColorString()
+        /// <summary>
+        /// Converts a color into a colorr string just concat the string onto what you printing to the console,
+        /// the string will not show up in the console and the color gets chnchet
+        /// see docs
+        /// </summary>
+        /// <param name="col">the color to encode in the string</param>
+        /// <returns>color encoded in string</returns>
+        public static string ForgroundColorString (Color col)
         {
-            return GetForegroundColorString(Color.LightGray) + GetBackgroundColorString(Color.FromArgb(13, 13, 13));
+            if (!ConsoleOptions.IsRGBModeEnabled())
+                ConsoleOptions.EnableRGBConsoleMode();
+            return "\x1b[38;2;" + col.R + ";" + col.G + ";" + col.B + "m";
+        }
+
+        /// <summary>
+        /// Converts a color into a color string just concat the string in front of what you printing to the console,
+        /// the string will not show up in the console and the color gets chnchet
+        /// see docs
+        /// </summary>
+        /// <param name="col">Color to encode</param>
+        /// <returns>color encoded in string</returns>
+        public static string BackgroundColorString (Color col)
+        {
+            if (!ConsoleOptions.IsRGBModeEnabled())
+                ConsoleOptions.EnableRGBConsoleMode();
+            return "\x1b[48;2;" + col.R + ";" + col.G + ";" + col.B + "m";
         }
 
         /// <summary>

@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace ConsoleUtilities
+namespace ConsoleUtilitiesLibary
 {
     /// <summary>
     /// A class for printing Lists

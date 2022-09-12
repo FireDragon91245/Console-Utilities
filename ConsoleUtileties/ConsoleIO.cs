@@ -4,7 +4,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 
-namespace ConsoleUtilities
+namespace ConsoleUtilitiesLibary
 {
     /// <summary>
     /// A class for printing Folders and Files to the Console
@@ -199,6 +199,7 @@ namespace ConsoleUtilities
         /// Print The Folders Contetns
         /// </summary>
         /// <param name="line">The console line to start printing at</param>
+        /// <param name="dir">The directory to print</param>
         /// <param name="colums">What IOColums are countained in the list</param>
         public static void PrintFolder (int line, DirectoryInfo dir, IOColums[] colums)
         {
@@ -297,6 +298,7 @@ namespace ConsoleUtilities
         /// Print details about a file in a list form <see cref="ConsoleLists"/>
         /// </summary>
         /// <param name="line">the line to start printing at</param>
+        /// <param name="path">path of the file to print</param>
         /// <param name="categorys">categorys that detirmin what is in the list and in what order</param>
         /// <param name="style">how the list looks</param>
         public static void PrintFile (int line, string path, FileCategorys[] categorys, TableLook style)
@@ -579,8 +581,12 @@ namespace ConsoleUtilities
         }
     }
 
+    /// <summary>
+    /// how a table is sortet by IOColums
+    /// </summary>
     public enum IOSorting
     {
+#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
         NoSorting,
         NameAsending,
         SizeAsending,
@@ -612,10 +618,15 @@ namespace ConsoleUtilities
         IsReadOnlyDesending,
         LastAcessDateDesending,
         LastAcessDateUtcDesending
+#pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
     }
 
+    /// <summary>
+    /// Categorys that can be listet in a table displying a folder
+    /// </summary>
     public enum IOColums
     {
+#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
         Name,
         Size,
         Extension,
@@ -631,10 +642,15 @@ namespace ConsoleUtilities
         IsReadOnly,
         LastAcessDate,
         LastAcessDateUtc
+#pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
     }
 
+    /// <summary>
+    /// Categorys that can be listet in a table displaying a file
+    /// </summary>
     public enum FileCategorys
     {
+#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
         Size,
         Name,
         Extension,
@@ -651,5 +667,6 @@ namespace ConsoleUtilities
         LastWrittenTime,
         LastWrittenTimeUtc,
         FolderName
+#pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
     }
 }
