@@ -1,5 +1,5 @@
 # ConsoleUtilities
-Tgis is a Class-Libary i made for myself to create a good loking console aplication fast.
+This is a Class-Libary i made for myself to create a good loking console aplication fast.
 
 # Features
 - Progress Bars
