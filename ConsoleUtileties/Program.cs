@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Text;
 using System.Threading;
-using System.Reflection;
 using System.Drawing;
-using Microsoft.Win32.SafeHandles;
-using static ConsoleUtileties.InputRecords;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.ComponentModel;
-using ConsoleUtileties;
 
 namespace ConsoleUtilitiesLibary
 {

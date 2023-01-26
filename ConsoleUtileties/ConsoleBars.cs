@@ -29,7 +29,7 @@ namespace ConsoleUtilitiesLibary
         {
             int fill = val * ConsoleWidth / max;
             double percent = val * 100d / max;
-            ProgressBarPrinter(line, fill, percent, "", BarArangement.BarOnly, BarLook.Default, defaultColor);
+            ProgressBarPrinter(line, fill, percent, string.Empty, BarArangement.BarOnly, BarLook.Default, defaultColor);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace ConsoleUtilitiesLibary
         {
             int fill = (int) Math.Round(val * ConsoleWidth / max);
             double percent = val * 100d / max;
-            ProgressBarPrinter(line, fill, percent, "", BarArangement.BarOnly, BarLook.Default, defaultColor);
+            ProgressBarPrinter(line, fill, percent, string.Empty, BarArangement.BarOnly, BarLook.Default, defaultColor);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace ConsoleUtilitiesLibary
         {
             int fill = (int) Math.Round(val * ConsoleWidth / max);
             double percent = val * 100d / max;
-            ProgressBarPrinter(line, fill, percent, "", BarArangement.BarOnly, BarLook.Default, defaultColor);
+            ProgressBarPrinter(line, fill, percent, string.Empty, BarArangement.BarOnly, BarLook.Default, defaultColor);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace ConsoleUtilitiesLibary
         {
             int fill = (int) Math.Round(val * ConsoleWidth / max);
             double percent = decimal.ToDouble(val * 100 / max);
-            ProgressBarPrinter(line, fill, percent, "", BarArangement.BarOnly, BarLook.Default, defaultColor);
+            ProgressBarPrinter(line, fill, percent, string.Empty, BarArangement.BarOnly, BarLook.Default, defaultColor);
         }
 
         /// <summary>
@@ -864,7 +864,6 @@ namespace ConsoleUtilitiesLibary
     /// </summary>
     public enum BarArangement
     {
-#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
         BarOnly,
         BarWithTitle,
         BarWithTitleCentered,
@@ -882,7 +881,6 @@ namespace ConsoleUtilitiesLibary
         BarAndTitleInBarAndPercentageUnder,
         BarAndTitleInBarAndPercentageUnderCentered,
         BarAndTitleFolowedByPercentageInBar
-#pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
     }
 
     /// <summary>
@@ -890,7 +888,6 @@ namespace ConsoleUtilitiesLibary
     /// </summary>
     public enum BarLook
     {
-#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
         Default,
         SquareBracketsBorder,
         AngleBracketsBorder,
@@ -927,6 +924,5 @@ namespace ConsoleUtilitiesLibary
         NoBorderAndStarFilling,
         NoBorderAndHashTagFilling,
         NoBorderAndLineFilling
-#pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
     }
 }

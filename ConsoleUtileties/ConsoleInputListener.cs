@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.Net.NetworkInformation;
 using Microsoft.Win32.SafeHandles;
 using ConsoleUtileties;
-using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
+
+[assembly: DisableRuntimeMarshalling]
 
 namespace ConsoleUtilitiesLibary
 {
-    public class ConsoleInputListener
+    public partial class ConsoleInputListener
     {
 
         private const int KEY_EVENT = 1;
@@ -127,20 +123,19 @@ namespace ConsoleUtilitiesLibary
             }
         }
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [LibraryImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetConsoleMode(ConsoleHandle hConsoleHandle, ref int lpMode);
+        internal static partial bool GetConsoleMode(ConsoleHandle hConsoleHandle, ref int lpMode);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        internal static extern ConsoleHandle GetStdHandle(int nStdHandle);
+        [LibraryImport("kernel32.dll", SetLastError = true)]
+        internal static partial ConsoleHandle GetStdHandle(int nStdHandle);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [LibraryImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool ReadConsoleInput(ConsoleHandle hConsoleInput, ref InputRecords.INPUT_RECORD lpBuffer, uint nLength, ref uint lpNumberOfEventsRead);
+        internal static partial bool ReadConsoleInput(ConsoleHandle hConsoleInput, ref InputRecords.INPUT_RECORD lpBuffer, uint nLength, ref uint lpNumberOfEventsRead);
 
-
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [LibraryImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool SetConsoleMode(ConsoleHandle hConsoleHandle, int dwMode);
+        internal static partial bool SetConsoleMode(ConsoleHandle hConsoleHandle, int dwMode);
     }
 }

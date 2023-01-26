@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace ConsoleUtilitiesLibary
@@ -9,20 +6,23 @@ namespace ConsoleUtilitiesLibary
     /// <summary>
     /// Class to customize The Console like Disabling the red X
     /// </summary>
-    public static class ConsoleOptions
+    public static partial class ConsoleOptions
     {
         private const int STD_INPUT_HANDLE = -10;
         private const int STD_OUTPUT_HANDLE = -11;
         //internal const int STD_ERROR_HANDLE = -12;
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool SetConsoleMode(ConsoleHandle hConsoleHandle, int mode);
+        [LibraryImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool SetConsoleMode(ConsoleHandle hConsoleHandle, int mode);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool GetConsoleMode(ConsoleHandle handle, ref int mode);
+        [LibraryImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool GetConsoleMode(ConsoleHandle handle, ref int mode);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern ConsoleHandle GetStdHandle(int handle);
+        [LibraryImport("kernel32.dll", SetLastError = true)]
+        private static partial ConsoleHandle GetStdHandle (int handle);
+
 
         private static void DisableCustomAdress (ConsoleHandle handle, int adress)
         {
@@ -56,31 +56,31 @@ namespace ConsoleUtilitiesLibary
             }
         }
 
-        public static class SystemMenu
+        public static partial class SystemMenu
         {
             private const int MF_DISABLED = 0x00000002;
             private const int MF_ENABLED = 0x00000000;
-            private const int MF_GRAYED = 0x00000001;
 
             private const int SC_SIZE = 0xF000;
             private const int SC_MINIMIZE = 0xF020;
             private const int SC_MAXIMIZE = 0xF030;
             private const int SC_CLOSE = 0xF060;
 
-            [DllImport("user32.dll")]
-            private static extern int DrawMenuBar(IntPtr consoleWindow);
+            [LibraryImport("user32.dll")]
+            private static partial int DrawMenuBar(IntPtr consoleWindow);
 
-            [DllImport("user32.dll")]
-            private static extern int DeleteMenu(IntPtr hMenu, int nPosition, int wFlags);
+            [LibraryImport("user32.dll")]
+            private static partial int DeleteMenu(IntPtr hMenu, int nPosition, int wFlags);
 
-            [DllImport("user32.dll")]
-            private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+            [LibraryImport("user32.dll")]
+            private static partial IntPtr GetSystemMenu(IntPtr hWnd, [MarshalAs(UnmanagedType.Bool)] bool bRevert);
 
-            [DllImport("kernel32.dll", ExactSpelling = true)]
-            private static extern IntPtr GetConsoleWindow();
+            [LibraryImport("kernel32.dll")]
+            private static partial IntPtr GetConsoleWindow();
 
-            [DllImport("User32.dll")]
-            private static extern bool EnableMenuItem(IntPtr handle, int item, int state);
+            [LibraryImport("User32.dll")]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            private static partial bool EnableMenuItem(IntPtr handle, int item, int state);
 
             public static void ResetSystemMenu()
             {
@@ -198,8 +198,6 @@ namespace ConsoleUtilitiesLibary
             private const int ENABLE_WINDOW_INPUT = 0x0080;
             private const int ENABLE_VIRTUAL_TERMINAL_INPUT = 0x0200;
             private const int ENABLE_EXTENDED_FLAGS = 0x0080;
-
-            private static readonly Dictionary<int, bool> InputHandleState = new();
 
             public static void DisableEchoInput(bool disable)
             {

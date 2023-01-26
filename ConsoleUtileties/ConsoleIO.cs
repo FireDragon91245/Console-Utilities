@@ -385,7 +385,7 @@ namespace ConsoleUtilitiesLibary
                     IOSorting.SizeDesending => "Size DESC",
                     IOSorting.NameDesending => "Name DESC",
                     IOSorting.ExtensionDesending => "Extension DESC",
-                    IOSorting.NoSorting => "",
+                    IOSorting.NoSorting => string.Empty,
                     IOSorting.LastWritenDateAsending => "Last Written ASC",
                     IOSorting.LastWritenDateUtcAsending => "Last Written Utc ASC",
                     IOSorting.AtributesAsending => "Atributes ASC",
@@ -410,7 +410,7 @@ namespace ConsoleUtilitiesLibary
                     IOSorting.IsReadOnlyDesending => "Read Only DESC",
                     IOSorting.LastAcessDateDesending => "Last Opened DESC",
                     IOSorting.LastAcessDateUtcDesending => "Last Opened Utc DESC",
-                    _ => "",
+                    _ => string.Empty,
                 };
             }
 
@@ -459,18 +459,18 @@ namespace ConsoleUtilitiesLibary
                         curRow.Add(col switch
                         {
                             IOColums.Name => directory.Name,
-                            IOColums.Size => "",
+                            IOColums.Size => string.Empty,
                             IOColums.Extension => "Folder",
                             IOColums.LastWritenDate => directory.LastWriteTime,
                             IOColums.LastWritenDateUtc => directory.LastWriteTimeUtc,
                             IOColums.Atributes => directory.Attributes,
                             IOColums.CreationDate => directory.CreationTime,
                             IOColums.CreationDateUtc => directory.CreationTimeUtc,
-                            IOColums.FileDirectory => "",
-                            IOColums.FileDirectoryName => "",
+                            IOColums.FileDirectory => string.Empty,
+                            IOColums.FileDirectoryName => string.Empty,
                             IOColums.Exists => directory.Exists,
                             IOColums.FullName => directory.FullName,
-                            IOColums.IsReadOnly => "",
+                            IOColums.IsReadOnly => string.Empty,
                             IOColums.LastAcessDate => directory.LastAccessTime,
                             IOColums.LastAcessDateUtc => directory.LastAccessTimeUtc,
                             _ => throw new ArgumentOutOfRangeException($"IMPOSIBLE this item ist countained in the enum {typeof(IOColums)}")
@@ -523,7 +523,7 @@ namespace ConsoleUtilitiesLibary
                 dt.Columns.Add("Size", typeof(object));
                 foreach (DirectoryInfo d in dir.GetDirectories())
                 {
-                    dt.Rows.Add($"{d.Name}", "Folder", "");
+                    dt.Rows.Add($"{d.Name}", "Folder", string.Empty);
                 }
                 foreach (FileInfo file in dir.GetFiles())
                 {
@@ -569,7 +569,7 @@ namespace ConsoleUtilitiesLibary
                 {
                     return false;
                 }
-                if (Enum.TryParse(sort.ToString().Replace("Asending", "").Replace("Desending", ""), true, out IOColums col))
+                if (Enum.TryParse(sort.ToString().Replace("Asending", string.Empty).Replace("Desending", string.Empty), true, out IOColums col))
                 {
                     if (colums.Contains(col))
                     {
@@ -586,7 +586,6 @@ namespace ConsoleUtilitiesLibary
     /// </summary>
     public enum IOSorting
     {
-#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
         NoSorting,
         NameAsending,
         SizeAsending,
@@ -618,7 +617,6 @@ namespace ConsoleUtilitiesLibary
         IsReadOnlyDesending,
         LastAcessDateDesending,
         LastAcessDateUtcDesending
-#pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
     }
 
     /// <summary>
@@ -626,7 +624,6 @@ namespace ConsoleUtilitiesLibary
     /// </summary>
     public enum IOColums
     {
-#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
         Name,
         Size,
         Extension,
@@ -642,7 +639,6 @@ namespace ConsoleUtilitiesLibary
         IsReadOnly,
         LastAcessDate,
         LastAcessDateUtc
-#pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
     }
 
     /// <summary>
@@ -650,7 +646,6 @@ namespace ConsoleUtilitiesLibary
     /// </summary>
     public enum FileCategorys
     {
-#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
         Size,
         Name,
         Extension,
@@ -667,6 +662,5 @@ namespace ConsoleUtilitiesLibary
         LastWrittenTime,
         LastWrittenTimeUtc,
         FolderName
-#pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
     }
 }

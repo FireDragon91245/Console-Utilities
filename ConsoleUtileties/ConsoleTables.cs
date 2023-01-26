@@ -963,12 +963,10 @@ namespace ConsoleUtilitiesLibary
     /// </summary>
     public enum TableLook
     {
-#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
         Default,
         Lines,
         HashTag,
         Solid,
         DoubleLines
-#pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
     }
 }
