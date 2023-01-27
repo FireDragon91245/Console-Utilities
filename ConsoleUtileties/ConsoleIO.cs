@@ -4,7 +4,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 
-namespace ConsoleUtilitiesLibary
+namespace ConsoleUtils
 {
     /// <summary>
     /// A class for printing Folders and Files to the Console

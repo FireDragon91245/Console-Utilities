@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConsoleUtilitiesLibary
+namespace ConsoleUtils
 {
 
     /// <summary>

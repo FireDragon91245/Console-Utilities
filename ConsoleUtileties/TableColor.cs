@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace ConsoleUtilitiesLibary
+namespace ConsoleUtils
 {
     /// <summary>
     /// Color config for all tables and lists

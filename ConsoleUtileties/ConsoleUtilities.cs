@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Text;
 
-namespace ConsoleUtilitiesLibary
+namespace ConsoleUtils
 {
 
     /// <summary>

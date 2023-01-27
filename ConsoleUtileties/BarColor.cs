@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleUtilitiesLibary
+namespace ConsoleUtils
 {
     /// <summary>
     /// Color config for all bar styles

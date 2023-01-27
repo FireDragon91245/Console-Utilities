@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Drawing;
-using ConsoleUtileties;
+using System.IO;
+using ConsoleUtilitiesLibary.ClipbordUtils;
+using ConsoleUtilitiesLibary.ConsoleInput;
+using System.Threading.Tasks;
 
 namespace ConsoleUtilitiesLibary
 {
@@ -9,33 +12,28 @@ namespace ConsoleUtilitiesLibary
     {
         public static void Main (string[] args)
         {
+            int c1 = 0;
+            int c2 = 0;
             ConsoleInputListener list = new();
+            ConsoleInputListener list2 = new();
             list.OnKeyEvent += (args) => {
-                //Console.WriteLine(args.ToString());
-
+                Console.SetCursorPosition(0, 2);
+                c1++;
+                Console.WriteLine($"l1: {c1}");
+            };
+            list2.OnKeyEvent += (args) =>
+            {
+                Console.SetCursorPosition(0, 4);
+                c2++;
+                Console.WriteLine($"l1: {c2}");
             };
             list.StartListening(new CancellationToken(false));
+            list2.StartListening(new CancellationToken(false));
 
-            Clipbord.SetClipboard("Hallo Uhrzeiz: {0}", DateTime.Now.ToLongTimeString());
-
-            Console.WriteLine("Copy Something");
-            Console.ReadLine();
-
-            Console.WriteLine(Clipbord.TryGetClipbord(out string d));
-            Console.WriteLine(d);
-
-            ConsoleOptions.SystemMenu.DisableConsoleClose(false);
-
-            ConsoleOptions.ConsoleOutput.DisableVirtualTerminalProcessing(false);
-
-            ConsoleOptions.EnableRGBConsoleMode();
-
-            ConsoleUtilities.SetRGBConsoleForegroundColor(Color.Red);
-
-            Console.WriteLine();
-
-
-            Console.ReadLine();
+            while (true)
+            {
+                Task.Delay(10).GetAwaiter().GetResult();
+            }
         }
 
     }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace ConsoleUtilitiesLibary
+namespace ConsoleUtils
 {
     /// <summary>
     /// Class to customize The Console like Disabling the red X

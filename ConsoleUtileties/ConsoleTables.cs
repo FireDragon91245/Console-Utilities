@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace ConsoleUtilitiesLibary
+namespace ConsoleUtils
 {
     /// <summary>
     /// Print Tables nicly Formatet

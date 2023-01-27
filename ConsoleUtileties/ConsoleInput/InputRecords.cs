@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleUtileties
+namespace ConsoleUtils.ConsoleInput
 {
 
     sealed internal partial class InputRecords

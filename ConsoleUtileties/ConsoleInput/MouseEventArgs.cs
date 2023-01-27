@@ -1,8 +1,8 @@
-﻿namespace ConsoleUtilitiesLibary
+﻿namespace ConsoleUtils.ConsoleInput
 {
     public class MouseEventArgs
     {
-        public MouseEventArgs (ushort MouseX, ushort MouseY, int ControlKeyState, int ButtonState, int EventFlags, bool LeftAltPressed, bool LeftCtrlPressed, bool ShiftPressed, bool CapsLockActivatet, bool RightAltPressed, bool RightCtrlPressed, bool EnhancedKey, bool NumLockActivatet, bool ScrolLockActivatet, bool Button1Pressed, bool Button2Pressed, bool Button3Pressed, bool Button4Pressed, bool RightMostButtonPressed, bool DoubleClicked, bool HorisontalMouseWheelMoved, bool MouseMoved, bool VerticalMouseWheelMoved, bool MouseWheelMoveDirection)
+        public MouseEventArgs(ushort MouseX, ushort MouseY, int ControlKeyState, int ButtonState, int EventFlags, bool LeftAltPressed, bool LeftCtrlPressed, bool ShiftPressed, bool CapsLockActivatet, bool RightAltPressed, bool RightCtrlPressed, bool EnhancedKey, bool NumLockActivatet, bool ScrolLockActivatet, bool Button1Pressed, bool Button2Pressed, bool Button3Pressed, bool Button4Pressed, bool RightMostButtonPressed, bool DoubleClicked, bool HorisontalMouseWheelMoved, bool MouseMoved, bool VerticalMouseWheelMoved, bool MouseWheelMoveDirection)
         {
             this.MouseX = MouseX;
             this.MouseY = MouseY;

@@ -2,13 +2,17 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
-using ConsoleUtileties;
 using System.Runtime.CompilerServices;
 
 [assembly: DisableRuntimeMarshalling]
 
-namespace ConsoleUtilitiesLibary
+namespace ConsoleUtilitiesLibary.ConsoleInput
 {
+    /// <summary>
+    /// Listen to Key and mouse Events!
+    /// 
+    /// WARNING: Be carefull with creating many instances of this class each instance will slow down the others try to keep only 1 istance.
+    /// </summary>
     public partial class ConsoleInputListener
     {
 
@@ -83,8 +87,6 @@ namespace ConsoleUtilitiesLibary
             while (!CancellationToken.IsCancellationRequested)
             {
                 ReadConsoleInput(handle, ref record, 1, ref numRead);
-
-                Console.WriteLine(record.EventType);
 
                 switch (record.EventType)
                 {

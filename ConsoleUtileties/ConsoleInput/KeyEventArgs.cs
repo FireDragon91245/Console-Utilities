@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConsoleUtilitiesLibary
+namespace ConsoleUtils.ConsoleInput
 {
     public sealed class KeyEventArgs
     {
@@ -23,11 +23,11 @@ namespace ConsoleUtilitiesLibary
         }
 
         public char UnicodeChar
-        { 
+        {
             get;
         }
         public int VirtualKeyCode
-        { 
+        {
             get;
         }
         public ConsoleKey ConsoleKey
@@ -38,35 +38,35 @@ namespace ConsoleUtilitiesLibary
             }
         }
         public byte ASCIIByte
-        { 
+        {
             get;
         }
         public int ControlCode
-        { 
+        {
             get;
         }
         public bool AltPressed
-        { 
+        {
             get;
         }
         public bool StrgPressed
-        { 
+        {
             get;
         }
         public bool ShiftPressed
-        { 
+        {
             get;
         }
         public bool CapsLockActivatet
-        { 
+        {
             get;
         }
         public bool AltGrPressed
-        { 
+        {
             get;
         }
         public bool StrgRigthPressed
-        { 
+        {
             get;
         }
         public bool KeyEnchanced
@@ -74,11 +74,11 @@ namespace ConsoleUtilitiesLibary
             get;
         }
         public bool NumLockActivtet
-        { 
+        {
             get;
         }
         public bool ScrolLockActivatet
-        { 
+        {
             get;
         }
 
