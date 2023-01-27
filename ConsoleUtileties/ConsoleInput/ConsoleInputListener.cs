@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: DisableRuntimeMarshalling]
 
-namespace ConsoleUtilitiesLibary.ConsoleInput
+namespace ConsoleUtils.ConsoleInput
 {
     /// <summary>
     /// Listen to Key and mouse Events!

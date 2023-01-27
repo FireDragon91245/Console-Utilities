@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleUtilitiesLibary.ClipbordUtils
+namespace ConsoleUtils.ClipbordUtils
 {
     public sealed partial class Clipbord
     {
