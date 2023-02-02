@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Drawing;
 using System.IO;
-using ConsoleUtilitiesLibary.ClipbordUtils;
-using ConsoleUtilitiesLibary.ConsoleInput;
+using ConsoleUtils.ClipbordUtils;
+using ConsoleUtils.ConsoleInput;
 using System.Threading.Tasks;
 
 namespace ConsoleUtilitiesLibary
