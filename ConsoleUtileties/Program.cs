@@ -6,7 +6,7 @@ using ConsoleUtils.ClipbordUtils;
 using ConsoleUtils.ConsoleInput;
 using System.Threading.Tasks;
 
-namespace ConsoleUtilitiesLibary
+namespace ConsoleUtils
 {
     public class Program
     {
