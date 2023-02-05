@@ -6,6 +6,16 @@
 		<LangVersion>11</LangVersion>
 		<Nullable>annotations</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Optimize>true</Optimize>
+		<OutputType>library</OutputType>
+		<RootNamespace>ConsoleUtils</RootNamespace>
+		<Authors>FireDragon91245</Authors>
+		<AssemblyVersion>1.2.1</AssemblyVersion>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/FireDragon91245/ConsoleUtileties</RepositoryUrl>
+		<Version>$(AssemblyVersion)</Version>
+		<AssemblyName>$(RootNamespace)V$(AssemblyVersion)</AssemblyName>
 	</PropertyGroup>
 
 </Project>

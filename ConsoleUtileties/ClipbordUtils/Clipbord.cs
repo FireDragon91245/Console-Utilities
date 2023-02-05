@@ -4,7 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using System.Windows;
 using System.Threading.Tasks;
 
 namespace ConsoleUtils.ClipbordUtils
