@@ -4,7 +4,7 @@ Now it contains many useful features for developing a more advanced console proj
 
 # Releases
   Recomended releases are:
-  - v1.2.1
+  - v1.2.1 (https://github.com/FireDragon91245/ConsoleUtileties/releases/tag/v1.2.1)
 
 # Features
 - Progress Bars
