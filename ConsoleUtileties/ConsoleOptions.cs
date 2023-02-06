@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace ConsoleUtils
@@ -58,8 +59,9 @@ namespace ConsoleUtils
 
         public static partial class SystemMenu
         {
-            private const int MF_DISABLED = 0x00000002;
-            private const int MF_ENABLED = 0x00000000;
+            private static readonly List<uint> DisabledMenuItems = new();
+
+            private const uint MF_BYCOMMAND = 0x00000000;
 
             private const int SC_SIZE = 0xF000;
             private const int SC_MINIMIZE = 0xF020;
@@ -67,10 +69,8 @@ namespace ConsoleUtils
             private const int SC_CLOSE = 0xF060;
 
             [LibraryImport("user32.dll")]
-            private static partial int DrawMenuBar(IntPtr consoleWindow);
-
-            [LibraryImport("user32.dll")]
-            private static partial int DeleteMenu(IntPtr hMenu, int nPosition, int wFlags);
+            [return: MarshalAs(UnmanagedType.Bool)]
+            private static partial bool DrawMenuBar(IntPtr consoleWindow);
 
             [LibraryImport("user32.dll")]
             private static partial IntPtr GetSystemMenu(IntPtr hWnd, [MarshalAs(UnmanagedType.Bool)] bool bRevert);
@@ -78,9 +78,8 @@ namespace ConsoleUtils
             [LibraryImport("kernel32.dll")]
             private static partial IntPtr GetConsoleWindow();
 
-            [LibraryImport("User32.dll")]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            private static partial bool EnableMenuItem(IntPtr handle, int item, int state);
+            [LibraryImport("user32.dll")]
+            private static partial uint DeleteMenu (IntPtr hMenu, uint pos, uint uFlag);
 
             public static void ResetSystemMenu()
             {
@@ -88,37 +87,30 @@ namespace ConsoleUtils
                 _ = GetSystemMenu(consoleWindow, true);
             }
 
-            private static void DisableMenuItem(int pos)
+            private static void DisableMenuItem(uint pos)
             {
-                IntPtr consoleWindow = GetConsoleWindow();
-                IntPtr sysMenu = GetSystemMenu(consoleWindow, false);
-                EnableMenuItem(sysMenu, pos, MF_DISABLED);
-
-                /*SysNenuState[pos] = false;
-                IntPtr consoleWindow = GetConsoleWindow();
-                IntPtr sysMenu = GetSystemMenu(consoleWindow, false);
-                if (sysMenu != IntPtr.Zero)
+                if (!DisabledMenuItems.Contains(pos))
                 {
-                    _ = DeleteMenu(sysMenu, pos, MF_BYCOMMAND);
+                    DisabledMenuItems.Add(pos);
                 }
-                _ = DrawMenuBar(consoleWindow);*/
+                IntPtr consoleWindow = GetConsoleWindow();
+                IntPtr sysMenu = GetSystemMenu(consoleWindow, false);
+                _ = DeleteMenu(sysMenu, pos, MF_BYCOMMAND);
+                _ = DrawMenuBar(consoleWindow);
             }
 
-            private static void EnableMenuItem(int pos)
+            private static void EnableMenuItem(uint pos)
             {
                 IntPtr consoleWindow = GetConsoleWindow();
+                ResetSystemMenu();
                 IntPtr sysMenu = GetSystemMenu(consoleWindow, false);
-                EnableMenuItem(sysMenu, pos, MF_ENABLED);
+                DisabledMenuItems.RemoveAll(val => val == pos);
 
-                /*
-                SysNenuState[pos] = true;
-                foreach (var kv in SysNenuState)
+                foreach (var item in DisabledMenuItems)
                 {
-                    if (!kv.Value)
-                    {
-                        DisableMenuItem(kv.Key);
-                    }
-                }*/
+                    _ = DeleteMenu(sysMenu, item, MF_BYCOMMAND);
+                }
+                _ = DrawMenuBar(consoleWindow);
             }
 
             /// <summary>
